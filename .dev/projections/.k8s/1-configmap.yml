@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: projections-env-data
+  namespace: projections
+data:
+  .env: |
+    APP_ENV=development
+    LOG_LEVEL=debug
+    SYNC_MEMBERLIST_PORT=7946
+    SYNC_CLUSTER_DNS_HOSTNAME=projections-headless.projections.svc.cluster.local
+    SYNC_GRPC_PORT=9000
+    SYNC_PEER_CLEANUP_INTERVAL=1
+    MONGODB_CONNECTION=mongodb+srv://root:change-me@mongodb-headless.mongodb.svc.cluster.local/?ssl=false
+    STREAMS_CLIENT_ADDRESS=streams.streams.svc.cluster.local:9000
+    STREAMS_CLIENT_KEEPALIVE_INTERVAL=40
+    STREAMS_CLIENT_KEEPALIVE_TIMEOUT=3
+    STREAMS_CLIENT_SEND_TIMEOUT=1
+    STREAMS_CLIENT_GROUP_ID=projections

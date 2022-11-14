@@ -1,0 +1,12 @@
+architecture: replicaset
+replicaCount: 3
+
+auth:
+  enabled: true
+  rootUser: root
+  rootPassword: change-me
+
+livenessProbe:
+  enabled: false
+readinessProbe:
+  enabled: false

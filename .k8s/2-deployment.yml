@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: projections-nodejs
+  namespace: projections-nodejs
+  labels:
+    app: projections-nodejs
+spec:
+  selector:
+    matchLabels:
+      app: projections-nodejs
+  template:
+    metadata:
+      labels:
+        app: projections-nodejs
+    spec:
+      containers:
+        - name: projections-nodejs
+          image: golang:alpine
+          imagePullPolicy: Never
+          command: ["sleep", "infinity"]

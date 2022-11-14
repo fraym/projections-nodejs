@@ -1,0 +1,45 @@
+{
+    "name": "@fraym/projections",
+    "version": "0.0.0",
+    "license": "UNLICENSED",
+    "homepage": "https://github.com/fraym/projections-nodejs",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/fraym/projections-nodejs.git"
+    },
+    "description": "nodejs client implementation for our projections service",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 0",
+        "format": "prettier --write \"**/*.{ts,tsx,json}\"",
+        "lint": "prettier --check \"**/*.{ts,tsx,json}\"",
+        "build": "npm run clean && tsc && chmod +x dist/cmd/projections.js",
+        "clean": "rm -rf dist",
+        "prepublishOnly": "npm test && npm run lint && npm run build",
+        "preversion": "npm run lint",
+        "cmd": "dist/cmd/projections.js --config .tst/projections.config.json"
+    },
+    "files": [
+        "dist/**/*"
+    ],
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "bin": {
+        "crud": "dist/cmd/projections.js"
+    },
+    "dependencies": {
+        "@fraym/projections-proto": "^1.0.0-alpha.5",
+        "@grpc/grpc-js": "^1.7.2",
+        "fs": "^0.0.1-security",
+        "graphql": "^16.6.0",
+        "yargs": "^17.6.2"
+    },
+    "devDependencies": {
+        "@becklyn/prettier": "^1.0.2",
+        "@types/uuid": "^8.3.4",
+        "@types/yargs": "^17.0.13",
+        "prettier": "^2.7.1",
+        "typescript": "^4.8.4",
+        "uuid": "^9.0.0"
+    },
+    "prettier": "@becklyn/prettier"
+}

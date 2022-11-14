@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: projections-nodejs
+  namespace: projections-nodejs
+spec:
+  type: ClusterIP
+  selector:
+    app: projections-nodejs
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3000

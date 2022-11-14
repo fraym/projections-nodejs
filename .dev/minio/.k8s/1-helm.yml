@@ -1,0 +1,5 @@
+mode: standalone
+
+auth:
+  rootUser: root
+  rootPassword: change-me

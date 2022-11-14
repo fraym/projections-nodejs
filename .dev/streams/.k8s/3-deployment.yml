@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streams
+  namespace: streams
+  labels:
+    app: streams
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: streams
+  template:
+    metadata:
+      labels:
+        app: streams
+    spec:
+      volumes:
+        - name: env
+          configMap:
+            name: streams-env-data
+      containers:
+        - name: streams
+          image: 067475952430.dkr.ecr.eu-central-1.amazonaws.com/fraym/streams:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+            - containerPort: 7946
+            - containerPort: 9000
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3000
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            failureThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          volumeMounts:
+            - name: env
+              mountPath: /root/.env
+              subPath: .env
+              readOnly: true

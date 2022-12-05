@@ -14,7 +14,7 @@ export interface ManagementClient {
     close: () => Promise<void>;
 }
 
-export const newManagementClient = async (config: ClientConfig): Promise<ManagementClient> => {
+export const newManagementClient = async (config?: ClientConfig): Promise<ManagementClient> => {
     config = useConfigDefaults(config);
     const serviceClient = new ManagementServiceClient(
         config.serverAddress,

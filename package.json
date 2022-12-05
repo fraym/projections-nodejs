@@ -27,8 +27,9 @@
         "crud": "dist/cmd/projections.js"
     },
     "dependencies": {
-        "@fraym/projections-proto": "^1.0.0-alpha.5",
+        "@fraym/projections-proto": "^1.0.0-alpha.9",
         "@grpc/grpc-js": "^1.7.2",
+        "dotenv": "^16.0.3",
         "fs": "^0.0.1-security",
         "graphql": "^16.6.0",
         "yargs": "^17.6.2"

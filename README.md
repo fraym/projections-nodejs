@@ -8,21 +8,29 @@ Client implementation in javascript for the projections service [streams](https:
 npm i @fraym/projections
 ```
 
+## GraphQL
+
+You can access the graphQL api at `http://projections:3000/delivery/graphql`.
+There is a sandbox available at `http://projections:3000/delivery/graphql/sandbox`.
+
+You need to add the `Tenant-Id` header in order to use the graphQL Endpoint and the sandbox.
+
 ## CLI command
 
 Use the `projections` cli command to automatically apply your projection schemas to the projections service.
 
-The `--config ./path/projections.config.json` flag can be used to configure the pat to your config file.
+Your type schemas have to match the glob you specify in the `PROJECTIONS_SCHEMA_GLOB` env variable (default: `./src/**/*.graphql`).
+You can specify the address (and port) of the crud service instance you use in the `PROJECTIONS_SERVER_ADDRESS` env variable (default: `127.0.0.1:9000`).
 
-Your projection schemas have to live directly below the path that you specified in `schemaPath` of your config file.
+You need to add a file that contains all built-in directives to your type schemas. The latest version of this file can be found [here](default.graphql).
 
-### CLI command config
+### Config
 
-```json
-{
-    "schemaPath": "./src/projections", // path to your projection schema files
-    "serverAddress": "127.0.0.1:9000" // address of the projections service
-}
+Use a `.env` file or env variables to configure cte clients and the command:
+
+```env
+PROJECTIONS_SERVER_ADDRESS=127.0.0.1:9000
+PROJECTIONS_SCHEMA_GLOB=./src/projections/*.graphql
 ```
 
 ## Usage
@@ -32,26 +40,29 @@ Your projection schemas have to live directly below the path that you specified 
 delivery client:
 
 ```typescript
-const client = await newClient({
-    serverAddress: "127.0.0.1:9000",
-});
+const deliveryClient = await newDeliveryClient();
+```
+
+management client:
+
+```typescript
+const managementClient = await newManagementClient();
 ```
 
 ### Create one or multipe projections
 
-Projection types are defined by schemas. A schema can contain more than one projection definition. See [SCHEMA.md](https://github.com/fraym/projections/blob/develop/SCHEMA.md) for a reference.
+Projectionw are defined by schemas. A schema can contain more than one projection definition. See [SCHEMA.md](https://github.com/fraym/projections/blob/develop/SCHEMA.md) for a reference.
 
 ```typescript
-await client.createTypes("your schema here");
+await managementClient.create("your schema here");
 ```
 
 ### Update one or multipe projections
 
-
-Projection types are defined by schemas. A schema can contain more than one projection definition. See [SCHEMA.md](https://github.com/fraym/projections/blob/develop/SCHEMA.md) for a reference.
+Projectionw are defined by schemas. A schema can contain more than one projection definition. See [SCHEMA.md](https://github.com/fraym/projections/blob/develop/SCHEMA.md) for a reference.
 
 ```typescript
-await client.updateTypes("your schema here");
+await managementClient.update("your schema here");
 ```
 
 ### Remove one or multipe projections
@@ -59,16 +70,49 @@ await client.updateTypes("your schema here");
 The name of `YourProjection` has to equal your projection name in your schema (also in casing).
 
 ```typescript
-await client.removeTypes(["YourProjection"]);
+await managementClient.remove(["YourProjection"]);
 ```
 
 ### Get list of existing projections
 
 ```typescript
-const list = await client.getAllTypes();
+const list = await managementClient.getAll();
 ```
 
-### Gracefully close the client
+### Get a single projection element
+
+The name of `YourProjection` has to equal your projection name in your schema (also in casing).
+The `id` has to match the id of the projection element that you want to get.
+
+```typescript
+const data = await deliveryClient.getData("tenantId", "YourProjection", "id");
+```
+
+You can specify a fourth parameter if you want to return a empty dataset instead of getting an error when querying a non existing element:
+
+```typescript
+const data = await deliveryClient.getData("tenantId", "YourProjection", "id", true);
+```
+
+### Get (paginated) data
+
+The name of `YourProjection` has to equal your type name in your schema (also in casing).
+
+No pagination:
+
+```typescript
+const data = await deliveryClient.getDataList("tenantId", "YourProjection");
+```
+
+With pagination:
+
+```typescript
+const limit = 50; // elements to query per page
+const page = 1; // number of the page you want to select, first page starts at: 1
+const data = await deliveryClient.getDataList("tenantId", "YourProjection", limit, page);
+```
+
+### Gracefully close the clients
 
 You won't lose any data if you don't. Use it for your peace of mind.
 

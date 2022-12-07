@@ -16,7 +16,7 @@
         "clean": "rm -rf dist",
         "prepublishOnly": "npm test && npm run lint && npm run build",
         "preversion": "npm run lint",
-        "cmd": "dist/cmd/projections.js --config .tst/projections.config.json"
+        "cmd": "dist/cmd/projections.js"
     },
     "files": [
         "dist/**/*"
@@ -24,13 +24,14 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "bin": {
-        "crud": "dist/cmd/projections.js"
+        "projections": "dist/cmd/projections.js"
     },
     "dependencies": {
         "@fraym/projections-proto": "^1.0.0-alpha.9",
+        "@graphql-tools/graphql-file-loader": "^7.5.11",
+        "@graphql-tools/load": "^7.8.6",
         "@grpc/grpc-js": "^1.7.2",
         "dotenv": "^16.0.3",
-        "fs": "^0.0.1-security",
         "graphql": "^16.6.0",
         "yargs": "^17.6.2"
     },

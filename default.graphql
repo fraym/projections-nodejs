@@ -1,0 +1,19 @@
+scalar DateTime
+scalar Any
+
+directive @identifyBy(attributes: [String!], payload: [String!]) on OBJECT
+directive @filter(topics: [String!], eventTypes: [String!]) on OBJECT
+directive @removeOn(topics: [String!], eventTypes: [String!]) on OBJECT
+
+directive @identifier on FIELD_DEFINITION
+directive @createdAt on FIELD_DEFINITION
+directive @changedAt on FIELD_DEFINITION
+directive @from(
+    events: [String!]
+    topics: [String!]
+    condition: String
+    value: String
+) on FIELD_DEFINITION
+directive @uuidV4(generate: Boolean) on FIELD_DEFINITION
+directive @validate(tags: [String!]!) on FIELD_DEFINITION
+directive @default(value: Any!) on FIELD_DEFINITION

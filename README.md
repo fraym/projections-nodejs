@@ -1,6 +1,6 @@
 # projections-nodejs
 
-Client implementation in javascript for the projections service [streams](https://github.com/fraym/projections).
+Client implementation in javascript for the projections service [projections](https://github.com/fraym/projections).
 
 ## Installation
 

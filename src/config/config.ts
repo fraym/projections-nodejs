@@ -39,8 +39,6 @@ export const useConfigDefaults = (config?: ClientConfig): Required<ClientConfig>
         config = getEnvConfig();
     }
 
-    console.log(config);
-
     return {
         serverAddress: config.serverAddress,
         keepaliveTimeout: config.keepaliveTimeout ?? 3 * 1000,

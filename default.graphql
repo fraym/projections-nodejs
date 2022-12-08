@@ -1,9 +1,18 @@
 scalar DateTime
 scalar Any
 
-directive @identifyBy(attributes: [String!], payload: [String!]) on OBJECT
-directive @filter(topics: [String!], eventTypes: [String!]) on OBJECT
-directive @removeOn(topics: [String!], eventTypes: [String!]) on OBJECT
+input EventSelector {
+    topics: [String!]
+    eventTypes: [String!]
+}
+
+input IdentifyByOptions {
+    attributes: [String!]
+    payload: [String!]
+}
+
+directive @upsertOn(on: EventSelector!, identifyBy: IdentifyByOptions) repeatable on OBJECT
+directive @removeOn(on: EventSelector!, identifyBy: IdentifyByOptions!) repeatable on OBJECT
 
 directive @identifier on FIELD_DEFINITION
 directive @createdAt on FIELD_DEFINITION
@@ -13,7 +22,7 @@ directive @from(
     topics: [String!]
     condition: String
     value: String
-) on FIELD_DEFINITION
+) repeatable on FIELD_DEFINITION
 directive @uuidV4(generate: Boolean) on FIELD_DEFINITION
-directive @validate(tags: [String!]!) on FIELD_DEFINITION
+directive @validate(tags: [String!]!) repeatable on FIELD_DEFINITION
 directive @default(value: Any!) on FIELD_DEFINITION

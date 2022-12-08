@@ -103,7 +103,7 @@ const getTypeDefinitionFromGraphQLObjectType = (t: GraphQLObjectType): TypeDefin
 
     if (t.astNode?.directives && t.astNode?.directives.length > 0) {
         const directiveNames = t.astNode.directives.map(directive => directive.name.value);
-        isProjection = directiveNames.includes("identifyBy");
+        isProjection = directiveNames.includes("upsertOn");
     }
 
     const name = t.toString();

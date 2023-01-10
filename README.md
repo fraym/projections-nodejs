@@ -94,7 +94,7 @@ You can specify a fourth parameter if you want to return a empty dataset instead
 const data = await deliveryClient.getData("tenantId", "YourProjection", "id", true);
 ```
 
-### Get (paginated) data
+### Get (paginated / filtered) data
 
 The name of `YourProjection` has to equal your type name in your schema (also in casing).
 

@@ -1,4 +1,4 @@
-import { DeliveryServiceClient } from "@fraym/projections-proto";
+import { DataFilter, DeliveryServiceClient } from "@fraym/projections-proto";
 
 export interface GetProjectionDataList {
     limit: number;
@@ -6,11 +6,51 @@ export interface GetProjectionDataList {
     data: Record<string, any>[];
 }
 
+export interface Filter {
+    fields: Record<string, FieldFilter>;
+    and: Filter[];
+    or: Filter[];
+}
+
+export interface FieldFilter {
+    type: string;
+    operation: string;
+    value: any;
+}
+
+const getProtobufDataFilter = (filter: Filter): DataFilter => {
+    const fields: Record<string, FieldFilter> = {};
+
+    for (const fieldName in filter.fields) {
+        const field = filter.fields[fieldName];
+        let value: string = "";
+
+        if (field.type === "String" && typeof field.value == "string") {
+            value = field.value;
+        } else {
+            value = JSON.stringify(field.value);
+        }
+
+        fields[fieldName] = {
+            operation: field.operation,
+            type: field.type,
+            value,
+        };
+    }
+
+    return {
+        fields: fields,
+        and: filter.and.map(and => getProtobufDataFilter(and)),
+        or: filter.or.map(or => getProtobufDataFilter(or)),
+    };
+};
+
 export const getProjectionDataList = async (
     tenantId: string,
     projection: string,
     limit: number,
     page: number,
+    filter: Filter,
     serviceClient: DeliveryServiceClient
 ): Promise<GetProjectionDataList | null> => {
     return new Promise<GetProjectionDataList | null>((resolve, reject) => {
@@ -22,6 +62,7 @@ export const getProjectionDataList = async (
                 limit,
                 page,
                 returnEmptyDataIfNotFound: false,
+                filter: getProtobufDataFilter(filter),
             },
             (error, response) => {
                 if (error) {

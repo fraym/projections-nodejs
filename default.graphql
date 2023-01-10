@@ -1,5 +1,6 @@
 scalar DateTime
 scalar Any
+scalar EventEnvelope
 
 input EventSelector {
     topics: [String!]
@@ -17,6 +18,8 @@ directive @removeOn(on: EventSelector!, identifyBy: IdentifyByOptions!) repeatab
 directive @identifier on FIELD_DEFINITION
 directive @createdAt on FIELD_DEFINITION
 directive @changedAt on FIELD_DEFINITION
+directive @index on FIELD_DEFINITION
+directive @aggregateEvents on FIELD_DEFINITION
 directive @from(
     events: [String!]
     topics: [String!]
@@ -26,3 +29,24 @@ directive @from(
 directive @uuidV4(generate: Boolean) on FIELD_DEFINITION
 directive @validate(tags: [String!]!) repeatable on FIELD_DEFINITION
 directive @default(value: Any!) on FIELD_DEFINITION
+
+input WebhookParameter {
+    key: String!
+    value: [WebhookParameterValue!]
+}
+input WebhookParameterValue {
+    events: [String!]
+    topics: [String!]
+    condition: String
+    value: String
+}
+
+directive @webhook(
+    url: String!
+    method: String!
+    path: [WebhookParameter!]
+    query: [WebhookParameter!]
+    header: [WebhookParameter!]
+    body: [WebhookParameter!]
+    condition: String
+) repeatable on FIELD_DEFINITION

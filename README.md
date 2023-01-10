@@ -112,6 +112,59 @@ const page = 1; // number of the page you want to select, first page starts at: 
 const data = await deliveryClient.getDataList("tenantId", "YourProjection", limit, page);
 ```
 
+With filter:
+
+```typescript
+const data = await deliveryClient.getDataList("tenantId", "YourProjection", undefined, undefined, {
+    fields: {
+        fieldName: {
+            operation: "equals",
+            type: "Int",
+            value: 123,
+        },
+    },
+});
+```
+
+All `Filter`s are evaluated by:
+
+-   checking that all field filters match
+-   checking that all `and` filters match
+-   checking that one of the `or` filters match
+
+Avaliable types:
+
+-   `String`
+-   `ID`
+-   `DateTime`
+-   `Int`
+-   `Float`
+-   `Boolean`
+
+Avaliable operators for all types:
+
+-   `equals`
+-   `notEquals`
+
+Avaliable options for the filter type `DateTime`:
+
+-   `inArray`
+-   `notInArray`
+-   `after`
+-   `before`
+
+Avaliable options for the filter type `String` and `ID`:
+
+-   `inArray`
+-   `notInArray`
+
+Avaliable options for the filter type `Int` and `Float`:
+
+-   `lessThan`
+-   `greaterThan`
+-   `lessThanOrEqual`
+-   `greaterThanOrEqual`
+
 ### Gracefully close the clients
 
 You won't lose any data if you don't. Use it for your peace of mind.

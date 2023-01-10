@@ -18,6 +18,7 @@ export const getProjectionData = async (
                 limit: 0,
                 page: 0,
                 returnEmptyDataIfNotFound,
+                filter: { fields: {}, and: [], or: [] },
             },
             (error, response) => {
                 if (error) {

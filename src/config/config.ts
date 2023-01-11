@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 
 export interface ClientConfig {
-    // serverAddress: address of the crud service
+    // serverAddress: address of the projection service
     serverAddress: string;
     // keepaliveInterval: grpc connection keepalive ping interval in milliseconds
     keepaliveInterval?: number;

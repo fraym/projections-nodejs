@@ -1,3 +1,8 @@
+# v0.4.0
+
+-   (feature) Add `PROJECTIONS_NAMESPACE` env variable
+-   (improvement) Do not allow type names that start with `Fraym`
+
 # v0.3.0
 
 -   (feature) Add `EventEnvelope` as scalar

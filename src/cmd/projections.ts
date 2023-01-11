@@ -26,11 +26,16 @@ const run = async () => {
     config();
 
     const argv = await yargs(hideBin(process.argv))
-        .config({ schemaGlob: "./src/**/*.graphql", serverAddress: "127.0.0.1:9000" })
+        .config({
+            schemaGlob: "./src/**/*.graphql",
+            serverAddress: "127.0.0.1:9000",
+            namespace: "",
+        })
         .pkgConf("projections").argv;
 
     let schemaGlob: string = argv.schemaGlob as string;
     let serverAddress: string = argv.serverAddress as string;
+    let namespace: string = argv.namespace as string;
 
     if (process.env.PROJECTIONS_SCHEMA_GLOB) {
         schemaGlob = process.env.PROJECTIONS_SCHEMA_GLOB;
@@ -40,18 +45,29 @@ const run = async () => {
         serverAddress = process.env.PROJECTIONS_SERVER_ADDRESS;
     }
 
+    if (process.env.PROJECTIONS_NAMESPACE) {
+        namespace = process.env.PROJECTIONS_NAMESPACE;
+    }
+
+    if (namespace === "Fraym") {
+        throw new Error("Cannot use Fraym as namespace as it is reserved for fraym apps");
+    }
+
     const schema = await loadSchema(`${schemaGlob}`, {
         loaders: [new GraphQLFileLoader()],
     });
 
-    const definitions = getTypeDefinition(schema);
+    const definitions = getTypeDefinition(schema, namespace);
 
-    await migrateSchemas(definitions, serverAddress);
+    await migrateSchemas(definitions, serverAddress, namespace);
 };
 
 run();
 
-const getTypeDefinition = (schema: GraphQLSchema): Record<string, TypeDefinition> => {
+const getTypeDefinition = (
+    schema: GraphQLSchema,
+    namespace: string
+): Record<string, TypeDefinition> => {
     const definitions: Record<string, TypeDefinition> = {};
 
     schema.toConfig().types.forEach(t => {
@@ -59,7 +75,8 @@ const getTypeDefinition = (schema: GraphQLSchema): Record<string, TypeDefinition
             return;
         }
 
-        const name = t.toString();
+        const name = `${namespace}${t.toString()}`;
+        ensureValidName(name);
 
         if (definitions[name]) {
             throw new Error(
@@ -68,12 +85,12 @@ const getTypeDefinition = (schema: GraphQLSchema): Record<string, TypeDefinition
         }
 
         if (t instanceof GraphQLObjectType) {
-            definitions[name] = getTypeDefinitionFromGraphQLObjectType(t);
+            definitions[name] = getTypeDefinitionFromGraphQLObjectType(t, namespace);
             return;
         }
 
         if (t instanceof GraphQLEnumType) {
-            definitions[name] = getTypeDefinitionFromGraphQLEnumType(t);
+            definitions[name] = getTypeDefinitionFromGraphQLEnumType(t, namespace);
             return;
         }
     });
@@ -81,8 +98,13 @@ const getTypeDefinition = (schema: GraphQLSchema): Record<string, TypeDefinition
     return definitions;
 };
 
-const getTypeDefinitionFromGraphQLEnumType = (t: GraphQLEnumType): TypeDefinition => {
-    const name = t.toString();
+const getTypeDefinitionFromGraphQLEnumType = (
+    t: GraphQLEnumType,
+    namespace: string
+): TypeDefinition => {
+    const name = `${namespace}${t.toString()}`;
+    ensureValidName(name);
+
     let enumValuesString = "";
 
     t.astNode?.values?.forEach(value => {
@@ -98,7 +120,10 @@ const getTypeDefinitionFromGraphQLEnumType = (t: GraphQLEnumType): TypeDefinitio
     };
 };
 
-const getTypeDefinitionFromGraphQLObjectType = (t: GraphQLObjectType): TypeDefinition => {
+const getTypeDefinitionFromGraphQLObjectType = (
+    t: GraphQLObjectType,
+    namespace: string
+): TypeDefinition => {
     let isProjection = false;
 
     if (t.astNode?.directives && t.astNode?.directives.length > 0) {
@@ -106,7 +131,9 @@ const getTypeDefinitionFromGraphQLObjectType = (t: GraphQLObjectType): TypeDefin
         isProjection = directiveNames.includes("upsertOn");
     }
 
-    const name = t.toString();
+    const name = `${namespace}${t.toString()}`;
+    ensureValidName(name);
+
     let objectDirectivesString = "";
     let objectFieldsString = "";
     let nestedTypes: string[] = [];
@@ -116,7 +143,7 @@ const getTypeDefinitionFromGraphQLObjectType = (t: GraphQLObjectType): TypeDefin
     });
 
     t.astNode?.fields?.forEach(f => {
-        const { str, nestedTypes: newNestedTypes } = getFieldStringAndNestedTypes(f);
+        const { str, nestedTypes: newNestedTypes } = getFieldStringAndNestedTypes(f, namespace);
         objectFieldsString += str;
 
         newNestedTypes.forEach(nested => {
@@ -140,14 +167,14 @@ interface FieldData {
     nestedTypes: string[];
 }
 
-const getFieldStringAndNestedTypes = (f: FieldDefinitionNode): FieldData => {
+const getFieldStringAndNestedTypes = (f: FieldDefinitionNode, namespace: string): FieldData => {
     let directivesString = "";
 
     f.directives?.forEach(d => {
         directivesString += getDirectiveString(d);
     });
 
-    const { nestedType, str: typeString } = getTypeData(f.type);
+    const { nestedType, str: typeString } = getTypeData(f.type, namespace);
 
     const nestedTypes: string[] = [];
 
@@ -166,10 +193,11 @@ interface TypeData {
     nestedType?: string;
 }
 
-const getTypeData = (t: TypeNode): TypeData => {
+const getTypeData = (t: TypeNode, namespace: string): TypeData => {
     switch (t.kind) {
         case Kind.NAMED_TYPE:
             const name = t.name.value;
+            ensureValidName(`${namespace}${name}`);
 
             return name === "String" ||
                 name === "Float" ||
@@ -182,18 +210,21 @@ const getTypeData = (t: TypeNode): TypeData => {
                       str: name,
                   }
                 : {
-                      str: name,
-                      nestedType: name,
+                      str: `${namespace}${name}`,
+                      nestedType: `${namespace}${name}`,
                   };
         case Kind.LIST_TYPE:
-            const { nestedType: listNestedType, str: listStr } = getTypeData(t.type);
+            const { nestedType: listNestedType, str: listStr } = getTypeData(t.type, namespace);
 
             return {
                 str: `[${listStr}]`,
                 nestedType: listNestedType,
             };
         case Kind.NON_NULL_TYPE:
-            const { nestedType: nonNullNestedType, str: nonNullStr } = getTypeData(t.type);
+            const { nestedType: nonNullNestedType, str: nonNullStr } = getTypeData(
+                t.type,
+                namespace
+            );
 
             return {
                 str: `${nonNullStr}!`,
@@ -261,11 +292,12 @@ const getValueString = (v: ConstValueNode): string => {
 
 const migrateSchemas = async (
     definitions: Record<string, TypeDefinition>,
-    serverAddress: string
+    serverAddress: string,
+    namespace: string
 ) => {
     const managementClient = await newManagementClient({ serverAddress });
     let existingProjections = (await managementClient.getAll()).filter(
-        projectionName => !projectionName.startsWith("Crud")
+        projectionName => !projectionName.startsWith("Crud") && projectionName.startsWith(namespace)
     );
 
     let createSchema = "";
@@ -342,5 +374,13 @@ const migrateSchemas = async (
         );
         await managementClient.remove(projectionsToRemove).catch(console.log);
         console.log(`Removed ${projectionsToRemove.length} projections`);
+    }
+};
+
+const ensureValidName = (name: string): void | never => {
+    if (name.startsWith("Fraym")) {
+        throw new Error(
+            `Cannot use Fraym as projection name prefix as it is reserved for fraym apps, got ${name}`
+        );
     }
 };

@@ -1,3 +1,7 @@
+# v0.4.1
+
+-   (bug) Use working version of @grpc/grpc-js
+
 # v0.4.0
 
 -   (feature) Add `PROJECTIONS_NAMESPACE` env variable

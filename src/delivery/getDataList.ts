@@ -1,9 +1,9 @@
 import { DataFilter, DeliveryServiceClient } from "@fraym/projections-proto";
 
-export interface GetProjectionDataList {
+export interface GetProjectionDataList<T extends {}> {
     limit: number;
     page: number;
-    data: Record<string, any>[];
+    data: T[];
 }
 
 export interface Filter {
@@ -45,15 +45,15 @@ const getProtobufDataFilter = (filter: Filter): DataFilter => {
     };
 };
 
-export const getProjectionDataList = async (
+export const getProjectionDataList = async <T extends {}>(
     tenantId: string,
     projection: string,
     limit: number,
     page: number,
     filter: Filter,
     serviceClient: DeliveryServiceClient
-): Promise<GetProjectionDataList | null> => {
-    return new Promise<GetProjectionDataList | null>((resolve, reject) => {
+): Promise<GetProjectionDataList<T> | null> => {
+    return new Promise<GetProjectionDataList<T> | null>((resolve, reject) => {
         serviceClient.getData(
             {
                 tenantId,
@@ -70,7 +70,7 @@ export const getProjectionDataList = async (
                     return;
                 }
 
-                const data: Record<string, any>[] = [];
+                const data: any[] = [];
 
                 for (const result of response.result) {
                     const dataRecord: Record<string, any> = {};

@@ -1,23 +1,23 @@
 import { DeliveryServiceClient } from "@fraym/projections-proto";
 import { credentials } from "@grpc/grpc-js";
 import { ClientConfig, useConfigDefaults } from "../config/config";
-import { getProjectionData, GetProjectionData } from "./getData";
+import { getProjectionData } from "./getData";
 import { Filter, GetProjectionDataList, getProjectionDataList } from "./getDataList";
 
 export interface DeliveryClient {
-    getData: (
+    getData: <T extends {}>(
         tenantId: string,
         type: string,
         id: string,
         returnEmptyDataIfNotFound?: boolean
-    ) => Promise<GetProjectionData | null>;
-    getDataList: (
+    ) => Promise<T | null>;
+    getDataList: <T extends {}>(
         tenantId: string,
         type: string,
         limit?: number,
         page?: number,
         filter?: Filter
-    ) => Promise<GetProjectionDataList | null>;
+    ) => Promise<GetProjectionDataList<T> | null>;
     close: () => Promise<void>;
 }
 
@@ -33,13 +33,13 @@ export const newDeliveryClient = async (config?: ClientConfig): Promise<Delivery
         }
     );
 
-    const getData = async (
+    const getData = async <T extends {}>(
         tenantId: string,
         projection: string,
         id: string,
         returnEmptyDataIfNotFound: boolean = false
-    ): Promise<GetProjectionData | null> => {
-        return await getProjectionData(
+    ): Promise<T | null> => {
+        return await getProjectionData<T>(
             tenantId,
             projection,
             id,
@@ -48,14 +48,14 @@ export const newDeliveryClient = async (config?: ClientConfig): Promise<Delivery
         );
     };
 
-    const getDataList = async (
+    const getDataList = async <T extends {}>(
         tenantId: string,
         projection: string,
         limit: number = 0,
         page: number = 1,
         filter: Filter = { fields: {}, and: [], or: [] }
-    ): Promise<GetProjectionDataList | null> => {
-        return await getProjectionDataList(
+    ): Promise<GetProjectionDataList<T> | null> => {
+        return await getProjectionDataList<T>(
             tenantId,
             projection,
             limit,

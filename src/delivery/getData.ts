@@ -1,15 +1,13 @@
 import { DeliveryServiceClient } from "@fraym/projections-proto";
 
-export type GetProjectionData = Record<string, any>;
-
-export const getProjectionData = async (
+export const getProjectionData = async <T extends {}>(
     tenantId: string,
     projection: string,
     dataId: string,
     returnEmptyDataIfNotFound: boolean,
     serviceClient: DeliveryServiceClient
-): Promise<GetProjectionData | null> => {
-    return new Promise<GetProjectionData | null>((resolve, reject) => {
+): Promise<T | null> => {
+    return new Promise<T | null>((resolve, reject) => {
         serviceClient.getData(
             {
                 tenantId,
@@ -31,7 +29,7 @@ export const getProjectionData = async (
                     return;
                 }
 
-                const data: Record<string, any> = {};
+                const data: any = {};
                 const resultData = response.result[0].data;
 
                 for (const key in resultData) {

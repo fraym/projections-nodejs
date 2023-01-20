@@ -1,3 +1,7 @@
+# v0.5.0
+
+-   (bc) Make filter `getData` and `getDataList` generic
+
 # v0.4.1
 
 -   (bug) Use working version of @grpc/grpc-js

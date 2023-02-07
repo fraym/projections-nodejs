@@ -1,3 +1,7 @@
+# v0.6.0
+
+-   (feature) Add order to list queries
+
 # v0.5.0
 
 -   (bc) Make filter `getData` and `getDataList` generic

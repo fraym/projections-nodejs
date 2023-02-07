@@ -297,7 +297,10 @@ const migrateSchemas = async (
 ) => {
     const managementClient = await newManagementClient({ serverAddress });
     let existingProjections = (await managementClient.getAll()).filter(
-        projectionName => !projectionName.startsWith("Crud") && projectionName.startsWith(namespace)
+        projectionName =>
+            !projectionName.startsWith("Crud") &&
+            !projectionName.startsWith("Fraym") &&
+            projectionName.startsWith(namespace)
     );
 
     let createSchema = "";

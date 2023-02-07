@@ -1,4 +1,6 @@
-import { DataFilter, DeliveryServiceClient } from "@fraym/projections-proto";
+import { DeliveryServiceClient } from "@fraym/projections-proto";
+import { Filter, getProtobufDataFilter } from "./filter";
+import { getProtobufDataOrder, Order } from "./order";
 
 export interface GetProjectionDataList<T extends {}> {
     limit: number;
@@ -6,51 +8,13 @@ export interface GetProjectionDataList<T extends {}> {
     data: T[];
 }
 
-export interface Filter {
-    fields: Record<string, FieldFilter>;
-    and: Filter[];
-    or: Filter[];
-}
-
-export interface FieldFilter {
-    type: string;
-    operation: string;
-    value: any;
-}
-
-const getProtobufDataFilter = (filter: Filter): DataFilter => {
-    const fields: Record<string, FieldFilter> = {};
-
-    for (const fieldName in filter.fields) {
-        const field = filter.fields[fieldName];
-        let value: string = "";
-
-        if (field.type === "String" && typeof field.value == "string") {
-            value = field.value;
-        } else {
-            value = JSON.stringify(field.value);
-        }
-
-        fields[fieldName] = {
-            operation: field.operation,
-            type: field.type,
-            value,
-        };
-    }
-
-    return {
-        fields: fields,
-        and: filter.and.map(and => getProtobufDataFilter(and)),
-        or: filter.or.map(or => getProtobufDataFilter(or)),
-    };
-};
-
 export const getProjectionDataList = async <T extends {}>(
     tenantId: string,
     projection: string,
     limit: number,
     page: number,
     filter: Filter,
+    order: Order[],
     serviceClient: DeliveryServiceClient
 ): Promise<GetProjectionDataList<T> | null> => {
     return new Promise<GetProjectionDataList<T> | null>((resolve, reject) => {
@@ -63,6 +27,7 @@ export const getProjectionDataList = async <T extends {}>(
                 page,
                 returnEmptyDataIfNotFound: false,
                 filter: getProtobufDataFilter(filter),
+                order: getProtobufDataOrder(order),
             },
             (error, response) => {
                 if (error) {

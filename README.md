@@ -168,6 +168,26 @@ Avaliable options for the filter type `Int` and `Float`:
 -   `lessThanOrEqual`
 -   `greaterThanOrEqual`
 
+With order:
+
+All order definitions are prioritized in the order that they are defined (the first definition is prioritized over the second).
+
+```typescript
+const data = await client.getDataList(
+    "tenantId",
+    "YourProjection",
+    undefined,
+    undefined,
+    undefined,
+    [
+        {
+            field: "fieldName",
+            descending: true, // omit this value for asc order
+        },
+    ]
+);
+```
+
 ### Gracefully close the clients
 
 You won't lose any data if you don't. Use it for your peace of mind.

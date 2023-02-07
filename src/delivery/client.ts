@@ -1,8 +1,10 @@
 import { DeliveryServiceClient } from "@fraym/projections-proto";
 import { credentials } from "@grpc/grpc-js";
 import { ClientConfig, useConfigDefaults } from "../config/config";
+import { Filter } from "./filter";
 import { getProjectionData } from "./getData";
-import { Filter, GetProjectionDataList, getProjectionDataList } from "./getDataList";
+import { GetProjectionDataList, getProjectionDataList } from "./getDataList";
+import { Order } from "./order";
 
 export interface DeliveryClient {
     getData: <T extends {}>(
@@ -16,7 +18,8 @@ export interface DeliveryClient {
         type: string,
         limit?: number,
         page?: number,
-        filter?: Filter
+        filter?: Filter,
+        order?: Order[]
     ) => Promise<GetProjectionDataList<T> | null>;
     close: () => Promise<void>;
 }
@@ -53,7 +56,8 @@ export const newDeliveryClient = async (config?: ClientConfig): Promise<Delivery
         projection: string,
         limit: number = 0,
         page: number = 1,
-        filter: Filter = { fields: {}, and: [], or: [] }
+        filter: Filter = { fields: {}, and: [], or: [] },
+        order: Order[] = []
     ): Promise<GetProjectionDataList<T> | null> => {
         return await getProjectionDataList<T>(
             tenantId,
@@ -61,6 +65,7 @@ export const newDeliveryClient = async (config?: ClientConfig): Promise<Delivery
             limit,
             page,
             filter,
+            order,
             serviceClient
         );
     };

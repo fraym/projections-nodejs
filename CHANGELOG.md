@@ -1,3 +1,9 @@
+# v0.7.0
+
+-   (feature) Add `@permission` directives
+-   (feature) Add `@expires` directive
+-   (feature) Add `@filterFromJwtData` directive
+
 # v0.6.0
 
 -   (feature) Add order to list queries

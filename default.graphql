@@ -14,6 +14,7 @@ input IdentifyByOptions {
 
 directive @upsertOn(on: EventSelector!, identifyBy: IdentifyByOptions) repeatable on OBJECT
 directive @removeOn(on: EventSelector!, identifyBy: IdentifyByOptions!) repeatable on OBJECT
+directive @expires(condition: String!) on OBJECT
 
 directive @identifier on FIELD_DEFINITION
 directive @createdAt on FIELD_DEFINITION

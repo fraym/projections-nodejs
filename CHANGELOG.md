@@ -1,6 +1,10 @@
+# v0.8.0
+
+-   (feature) Add `@global` directive
+
 # v0.7.0
 
--   (feature) Add `@permission` directives
+-   (feature) Add `@permission` directive
 -   (feature) Add `@expires` directive
 -   (feature) Add `@filterFromJwtData` directive
 

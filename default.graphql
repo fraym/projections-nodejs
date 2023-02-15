@@ -15,7 +15,8 @@ input IdentifyByOptions {
 directive @upsertOn(on: EventSelector!, identifyBy: IdentifyByOptions) repeatable on OBJECT
 directive @removeOn(on: EventSelector!, identifyBy: IdentifyByOptions!) repeatable on OBJECT
 directive @expires(condition: String!) on OBJECT
-directive @permission(read: [Permission!]) on OBJECT
+directive @global on OBJECT
+directive @permission(read: [Permission!]) on OBJECT | FIELD_DEFINITION
 
 directive @identifier on FIELD_DEFINITION
 directive @createdAt on FIELD_DEFINITION
@@ -32,7 +33,6 @@ directive @from(
 directive @uuidV4(generate: Boolean) on FIELD_DEFINITION
 directive @validate(tags: [String!]!) repeatable on FIELD_DEFINITION
 directive @default(value: Any!) on FIELD_DEFINITION
-directive @permission(read: [Permission!]) on FIELD_DEFINITION
 
 input WebhookParameter {
     key: String!

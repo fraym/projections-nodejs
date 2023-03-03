@@ -290,6 +290,52 @@ const getValueString = (v: ConstValueNode): string => {
     }
 };
 
+interface NestedSchemaData {
+    schema: string;
+    nestedTypes: string[];
+}
+
+const addNestedTypesToSchema = (
+    definitions: Record<string, TypeDefinition>,
+    nestedTypeName: string,
+    nestedTypes: string[]
+): NestedSchemaData => {
+    const nestedTypeDefinition = definitions[nestedTypeName];
+
+    if (
+        nestedTypes.indexOf(nestedTypeName) !== -1 ||
+        (nestedTypeDefinition && nestedTypeDefinition.isProjection)
+    ) {
+        return {
+            schema: "",
+            nestedTypes: [],
+        };
+    }
+
+    let newSchema = definitions[nestedTypeName].schema;
+    nestedTypes.push(nestedTypeName);
+
+    nestedTypeDefinition.nestedTypes.forEach(nestedNestedTypeName => {
+        const nestedSchemaData = addNestedTypesToSchema(
+            definitions,
+            nestedNestedTypeName,
+            nestedTypes
+        );
+
+        if (nestedSchemaData.schema === "") {
+            return;
+        }
+
+        newSchema += `\n${nestedSchemaData.schema}`;
+        nestedTypes.push(...nestedSchemaData.nestedTypes);
+    });
+
+    return {
+        schema: newSchema,
+        nestedTypes: nestedTypes,
+    };
+};
+
 const migrateSchemas = async (
     definitions: Record<string, TypeDefinition>,
     serverAddress: string,
@@ -319,16 +365,18 @@ const migrateSchemas = async (
             updateSchema += `\n${definitions[projectionName].schema}`;
 
             definitions[projectionName].nestedTypes.forEach(nestedTypeName => {
-                if (
-                    nestedTypesToUpdate.indexOf(nestedTypeName) !== -1 ||
-                    (definitions[nestedTypeName] && definitions[nestedTypeName].isProjection)
-                ) {
+                const nestedSchemaData = addNestedTypesToSchema(
+                    definitions,
+                    nestedTypeName,
+                    nestedTypesToUpdate
+                );
+
+                if (nestedSchemaData.schema === "") {
                     return;
                 }
 
-                updateSchema += `\n${definitions[nestedTypeName].schema}`;
-
-                nestedTypesToUpdate.push(nestedTypeName);
+                updateSchema += `\n${nestedSchemaData.schema}`;
+                nestedTypesToUpdate.push(...nestedSchemaData.nestedTypes);
             });
         }
     });
@@ -342,16 +390,18 @@ const migrateSchemas = async (
         createSchema += `\n${definitions[newName].schema}`;
 
         definitions[newName].nestedTypes.forEach(nestedTypeName => {
-            if (
-                nestedTypesToCreate.indexOf(nestedTypeName) !== -1 ||
-                (definitions[nestedTypeName] && definitions[nestedTypeName].isProjection)
-            ) {
+            const nestedSchemaData = addNestedTypesToSchema(
+                definitions,
+                nestedTypeName,
+                nestedTypesToCreate
+            );
+
+            if (nestedSchemaData.schema === "") {
                 return;
             }
 
-            createSchema += `\n${definitions[nestedTypeName].schema}`;
-
-            nestedTypesToCreate.push(nestedTypeName);
+            createSchema += `\n${nestedSchemaData.schema}`;
+            nestedTypesToCreate.push(...nestedSchemaData.nestedTypes);
         });
     });
 
@@ -359,7 +409,7 @@ const migrateSchemas = async (
         console.log(
             `Creating ${projectionsToCreate.length} projections: ${projectionsToCreate}...`
         );
-        await managementClient.create(createSchema).catch(console.log);
+        await managementClient.update(createSchema);
         console.log(`Created ${projectionsToCreate.length} projections`);
     }
 
@@ -367,7 +417,7 @@ const migrateSchemas = async (
         console.log(
             `Updating ${projectionsToUpdate.length} projections: ${projectionsToUpdate}...`
         );
-        await managementClient.update(updateSchema).catch(console.log);
+        await managementClient.update(updateSchema);
         console.log(`Updated ${projectionsToUpdate.length} projections`);
     }
 
@@ -375,7 +425,7 @@ const migrateSchemas = async (
         console.log(
             `Removing ${projectionsToRemove.length} projections: ${projectionsToRemove}...`
         );
-        await managementClient.remove(projectionsToRemove).catch(console.log);
+        await managementClient.remove(projectionsToRemove);
         console.log(`Removed ${projectionsToRemove.length} projections`);
     }
 };

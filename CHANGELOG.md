@@ -1,3 +1,8 @@
+# v0.8.1
+
+-   (improvement) Improve error handling in migrations
+-   (bug) Allow nested types in nested types
+
 # v0.8.0
 
 -   (feature) Add `@global` directive

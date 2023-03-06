@@ -17,18 +17,10 @@ export const getProtobufDataFilter = (filter: Filter): DataFilter => {
 
     for (const fieldName in filter.fields) {
         const field = filter.fields[fieldName];
-        let value: string = "";
-
-        if (field.type === "String" && typeof field.value == "string") {
-            value = field.value;
-        } else {
-            value = JSON.stringify(field.value);
-        }
-
         fields[fieldName] = {
             operation: field.operation,
             type: field.type,
-            value,
+            value: JSON.stringify(field.value),
         };
     }
 

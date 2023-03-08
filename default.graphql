@@ -14,13 +14,6 @@ input IdentifyByOptions {
 
 input WebhookParameter {
     key: String!
-    value: [WebhookParameterValue!]
-}
-
-input WebhookParameterValue {
-    events: [String!]
-    topics: [String!]
-    condition: String
     value: String
 }
 
@@ -36,6 +29,8 @@ directive @webhook(
     query: [WebhookParameter!]
     header: [WebhookParameter!]
     body: [WebhookParameter!]
+    events: [String!]
+    topics: [String!]
     condition: String
 ) repeatable on OBJECT | FIELD_DEFINITION
 

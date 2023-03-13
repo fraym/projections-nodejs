@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: projections-nodejs
-  namespace: projections-nodejs
+  namespace: fraym
 spec:
   type: ClusterIP
   selector:

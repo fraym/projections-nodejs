@@ -6,6 +6,7 @@ dev:
   projections-nodejs:
     image: node:18
     imagePullPolicy: Never
+    namespace: fraym
     command: bash
 
     workdir: /code

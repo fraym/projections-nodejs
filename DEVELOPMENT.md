@@ -19,13 +19,7 @@ minikube start
     -   use Makefiles in `./.dev/*`
 -   copy `.env.build` to `.env.build.local`
     -   add your personal access token (needs read access for private fraym org repositories)
--   deploy the app to your cluster
-
-```
-make init
-```
-
--   start okteto
+-   start the dev container
 
 ```
 make dev

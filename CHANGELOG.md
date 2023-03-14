@@ -1,3 +1,7 @@
+# v0.9.0
+
+-   (feature) Add `PERMISSIONS_SCHEMA_GLOB` env variable
+
 # v0.8.2
 
 -   (bug) Fix filter handling

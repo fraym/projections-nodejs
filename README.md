@@ -22,6 +22,8 @@ Use the `projections` cli command to automatically apply your projection schemas
 Your type schemas have to match the glob you specify in the `PROJECTIONS_SCHEMA_GLOB` env variable (default: `./src/**/*.graphql`).
 You can specify the address (and port) of the projections service instance you use in the `PROJECTIONS_SERVER_ADDRESS` env variable (default: `127.0.0.1:9000`).
 
+You might have a seperate permissions directory or file. As soon as your permissions schema enum is not part of the projections glob you can specify a `PERMISSIONS_SCHEMA_GLOB` env variable. It is empty by default but as soon as you provide it it will add the files in that glob to your projections schema, too.
+
 Use the `PROJECTIONS_NAMESPACE` env variable to restrict all migrations to your namespace. This is useful if multiple apps share the projections service. Note: You cannot name your projection or namespace by a `Fraym` prefix. This is a reserved prefix for fraym apps.
 
 You need to add a file that contains all built-in directives to your type schemas. The latest version of this file can be found [here](default.graphql).
@@ -33,6 +35,7 @@ Use a `.env` file or env variables to configure cte clients and the command:
 ```env
 PROJECTIONS_SERVER_ADDRESS=127.0.0.1:9000
 PROJECTIONS_SCHEMA_GLOB=./src/projections/*.graphql
+PERMISSIONS_SCHEMA_GLOB=
 PROJECTIONS_NAMESPACE=
 ```
 

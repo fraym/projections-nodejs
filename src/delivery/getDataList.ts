@@ -1,4 +1,5 @@
 import { DeliveryServiceClient } from "@fraym/projections-proto";
+import { AuthData, getProtobufAuthData } from "./auth";
 import { Filter, getProtobufDataFilter } from "./filter";
 import { getProtobufDataOrder, Order } from "./order";
 
@@ -9,8 +10,8 @@ export interface GetProjectionDataList<T extends {}> {
 }
 
 export const getProjectionDataList = async <T extends {}>(
-    tenantId: string,
     projection: string,
+    auth: AuthData,
     limit: number,
     page: number,
     filter: Filter,
@@ -18,14 +19,12 @@ export const getProjectionDataList = async <T extends {}>(
     serviceClient: DeliveryServiceClient
 ): Promise<GetProjectionDataList<T> | null> => {
     return new Promise<GetProjectionDataList<T> | null>((resolve, reject) => {
-        serviceClient.getData(
+        serviceClient.getDataList(
             {
-                tenantId,
                 projection,
-                dataId: "",
+                auth: getProtobufAuthData(auth),
                 limit,
                 page,
-                returnEmptyDataIfNotFound: false,
                 filter: getProtobufDataFilter(filter),
                 order: getProtobufDataOrder(order),
             },

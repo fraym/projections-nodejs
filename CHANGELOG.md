@@ -1,3 +1,7 @@
+# v0.10.0
+
+-   (bc) Implement new delivery api
+
 # v0.9.0
 
 -   (feature) Add `PERMISSIONS_SCHEMA_GLOB` env variable

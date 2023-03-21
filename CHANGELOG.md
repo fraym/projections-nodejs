@@ -1,3 +1,9 @@
+# vNext
+
+# v0.10.1
+
+-   (bug) Fix migration logic
+
 # v0.10.0
 
 -   (bc) Implement new delivery api

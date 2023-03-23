@@ -85,19 +85,90 @@ await managementClient.remove(["YourProjection"]);
 const list = await managementClient.getAll();
 ```
 
+### Authorization
+
+All delivery client functions make use of the `AuthData` object.
+This data is used to check access for the desired action.
+
+You can add the `FRAYM_AUTH_OWNER` scope in case you are performing an action that is no subject to restrictions.
+
+Fields:
+
+-   `tenantId`: Id of the tenant to use
+-   `scopes`: Slice of scopes to use for the action
+-   `data`: Data that is used in directives like `@filterFromJwtData`
+
+### Upsert data in projection
+
+In general you upsert data by publishing events on the event stream.
+There are cases where you want to improve performance and get detailed validation output. In these cases you can use the client to directly upsert data. Do not worry, this is still event based under the hood.
+
+```typescript
+const response = await client.upsertData<{ fieldName: string }>(
+    "ProjectionName",
+    authData,
+    "dataId",
+    {
+        fieldName: "value",
+    }
+);
+```
+
+The response contains the following fields:
+
+In case of no validation errors:
+
+-   `data`: The new data after your upsert action
+
+In case of validation errors:
+
+-   `validationErrors`: List of global validation errors that are not related to a single field
+-   `fieldValidationErrors`: Validation errors mapped by the name of the field that they relate to
+
+### Delete data from projection
+
+In general you delete data by publishing events on the event stream.
+There are cases where you want to improve performance and get detailed validation output. In these cases you can use the client to directly delete data. Do not worry, this is still event based under the hood.
+
+Delete by Id:
+
+```go
+const numberOfDeletedEntries = await client.deleteDataById("ProjectionName", authData, "dataId")
+```
+
+Delete by filter:
+
+```go
+const numberOfDeletedEntries = client.deleteDataByFilter("ProjectionName", authData, filter)
+```
+
 ### Get a single projection element
+
+A filter could look like this:
+
+```go
+const filter := {
+	fields: {
+        fieldName: {
+            operation: "equals",
+            type: "Int",
+            value: 123,
+        },
+    },
+}
+```
 
 The name of `YourProjection` has to equal your projection name in your schema (also in casing).
 The `id` has to match the id of the projection element that you want to get.
 
 ```typescript
-const data = await deliveryClient.getData("tenantId", "YourProjection", "id");
-```
-
-You can specify a fourth parameter if you want to return a empty dataset instead of getting an error when querying a non existing element:
-
-```typescript
-const data = await deliveryClient.getData("tenantId", "YourProjection", "id", true);
+const data = await deliveryClient.getData(
+    "YourProjection",
+    authData,
+    "id",
+    filter,
+    returnEmptyDataIfNotFound
+);
 ```
 
 ### Get (paginated / filtered) data
@@ -107,7 +178,7 @@ The name of `YourProjection` has to equal your type name in your schema (also in
 No pagination:
 
 ```typescript
-const data = await deliveryClient.getDataList("tenantId", "YourProjection");
+const data = await deliveryClient.getDataList("YourProjection", authData);
 ```
 
 With pagination:
@@ -115,13 +186,13 @@ With pagination:
 ```typescript
 const limit = 50; // elements to query per page
 const page = 1; // number of the page you want to select, first page starts at: 1
-const data = await deliveryClient.getDataList("tenantId", "YourProjection", limit, page);
+const data = await deliveryClient.getDataList("YourProjection", authData, limit, page);
 ```
 
 With filter:
 
 ```typescript
-const data = await deliveryClient.getDataList("tenantId", "YourProjection", undefined, undefined, {
+const data = await deliveryClient.getDataList("YourProjection", authData, undefined, undefined, {
     fields: {
         fieldName: {
             operation: "equals",
@@ -176,19 +247,12 @@ With order:
 All order definitions are prioritized in the order that they are defined (the first definition is prioritized over the second).
 
 ```typescript
-const data = await client.getDataList(
-    "tenantId",
-    "YourProjection",
-    undefined,
-    undefined,
-    undefined,
-    [
-        {
-            field: "fieldName",
-            descending: true, // omit this value for asc order
-        },
-    ]
-);
+const data = await client.getDataList("YourProjection", authData, undefined, undefined, undefined, [
+    {
+        field: "fieldName",
+        descending: true, // omit this value for asc order
+    },
+]);
 ```
 
 ### Gracefully close the clients

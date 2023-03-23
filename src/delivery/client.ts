@@ -1,6 +1,6 @@
 import { DeliveryServiceClient } from "@fraym/projections-proto";
 import { credentials } from "@grpc/grpc-js";
-import { ClientConfig, useConfigDefaults } from "../config/config";
+import { DeliveryClientConfig, useDeliveryConfigDefaults } from "../config/config";
 import { Filter } from "./filter";
 import { getProjectionData } from "./getData";
 import { GetProjectionDataList, getProjectionDataList } from "./getDataList";
@@ -40,8 +40,8 @@ export interface DeliveryClient {
     close: () => Promise<void>;
 }
 
-export const newDeliveryClient = async (config?: ClientConfig): Promise<DeliveryClient> => {
-    config = useConfigDefaults(config);
+export const newDeliveryClient = async (config?: DeliveryClientConfig): Promise<DeliveryClient> => {
+    config = useDeliveryConfigDefaults(config);
     const serviceClient = new DeliveryServiceClient(
         config.serverAddress,
         credentials.createInsecure(),

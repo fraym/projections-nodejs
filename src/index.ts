@@ -1,4 +1,4 @@
-export { ClientConfig, getEnvConfig } from "./config/config";
+export * from "./config/config";
 
 export * from "./management/client";
 

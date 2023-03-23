@@ -1,16 +1,14 @@
-import { ManagementServiceClient } from "@fraym/projections-proto";
+import { ManagementClientConfig } from "config/config";
 
-export const getAllProjections = async (
-    serviceClient: ManagementServiceClient
-): Promise<string[]> => {
-    return new Promise<string[]>((resolve, reject) => {
-        serviceClient.getProjections({}, (error, response) => {
-            if (error) {
-                reject(error.message);
-                return;
-            }
-
-            resolve(response.projectionNames);
-        });
+export const getAllProjections = async (config: ManagementClientConfig): Promise<string[]> => {
+    const response = await fetch(`${config.serverAddress}/management/projections`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${config.apiToken}`,
+        },
     });
+
+    const data = await response.json();
+
+    return data.projectionNames;
 };

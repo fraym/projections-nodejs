@@ -30,6 +30,7 @@ const run = async () => {
             schemaGlob: "./src/**/*.graphql",
             permissionsSchemaGlob: "",
             serverAddress: "127.0.0.1:9000",
+            apiToken: "",
             namespace: "",
         })
         .pkgConf("projections").argv;
@@ -37,6 +38,7 @@ const run = async () => {
     let schemaGlob: string = argv.schemaGlob as string;
     let permissionsSchemaGlob: string = argv.permissionsSchemaGlob as string;
     let serverAddress: string = argv.serverAddress as string;
+    let apiToken: string = argv.apiToken as string;
     let namespace: string = argv.namespace as string;
 
     if (process.env.PROJECTIONS_SCHEMA_GLOB) {
@@ -47,8 +49,12 @@ const run = async () => {
         permissionsSchemaGlob = process.env.PERMISSIONS_SCHEMA_GLOB;
     }
 
-    if (process.env.PROJECTIONS_SERVER_ADDRESS) {
-        serverAddress = process.env.PROJECTIONS_SERVER_ADDRESS;
+    if (process.env.PROJECTIONS_MANAGEMENT_SERVER_ADDRESS) {
+        serverAddress = process.env.PROJECTIONS_MANAGEMENT_SERVER_ADDRESS;
+    }
+
+    if (process.env.PROJECTIONS_MANAGEMENT_API_TOKEN) {
+        apiToken = process.env.PROJECTIONS_MANAGEMENT_API_TOKEN;
     }
 
     if (process.env.PROJECTIONS_NAMESPACE) {
@@ -71,7 +77,7 @@ const run = async () => {
 
     const definitions = getTypeDefinition(schema, namespace);
 
-    await migrateSchemas(definitions, serverAddress, namespace);
+    await migrateSchemas(definitions, serverAddress, apiToken, namespace);
 };
 
 run();
@@ -358,9 +364,10 @@ const addNestedTypesToSchema = (
 const migrateSchemas = async (
     definitions: Record<string, TypeDefinition>,
     serverAddress: string,
+    apiToken: string,
     namespace: string
 ) => {
-    const managementClient = await newManagementClient({ serverAddress });
+    const managementClient = await newManagementClient({ serverAddress, apiToken });
     let existingProjections = (await managementClient.getAll()).filter(
         projectionName =>
             !projectionName.startsWith("Crud") &&
@@ -436,7 +443,7 @@ const migrateSchemas = async (
         console.log(
             `Creating ${projectionsToCreate.length} projections: ${projectionsToCreate}...`
         );
-        await managementClient.update(createSchema);
+        await managementClient.upsert(createSchema);
         console.log(`Created ${projectionsToCreate.length} projections`);
     }
 
@@ -444,7 +451,7 @@ const migrateSchemas = async (
         console.log(
             `Updating ${projectionsToUpdate.length} projections: ${projectionsToUpdate}...`
         );
-        await managementClient.update(updateSchema);
+        await managementClient.upsert(updateSchema);
         console.log(`Updated ${projectionsToUpdate.length} projections`);
     }
 

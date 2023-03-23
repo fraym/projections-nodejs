@@ -1,17 +1,17 @@
 import { ManagementClientConfig } from "config/config";
 
-export const removeProjections = async (
-    projectionNames: string[],
+export const upsertProjections = async (
+    schema: string,
     config: ManagementClientConfig
 ): Promise<void> => {
     await fetch(`${config.serverAddress}/management/projections`, {
-        method: "DELETE",
+        method: "POST",
         headers: {
             Authorization: `Bearer ${config.apiToken}`,
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            projectionNames,
+            schema,
         }),
     });
 };

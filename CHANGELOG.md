@@ -1,5 +1,9 @@
 # vNext
 
+# v0.12.0
+
+-   (bc) Use http migration api
+
 # v0.11.0
 
 -   (feature) Add total amount to pagination data

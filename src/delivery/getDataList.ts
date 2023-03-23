@@ -6,6 +6,7 @@ import { getProtobufDataOrder, Order } from "./order";
 export interface GetProjectionDataList<T extends {}> {
     limit: number;
     page: number;
+    total: number;
     data: T[];
 }
 
@@ -50,6 +51,7 @@ export const getProjectionDataList = async <T extends {}>(
                 resolve({
                     limit: response.limit,
                     page: response.page,
+                    total: response.total,
                     data,
                 });
             }

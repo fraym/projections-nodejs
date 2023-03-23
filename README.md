@@ -178,29 +178,42 @@ The name of `YourProjection` has to equal your type name in your schema (also in
 No pagination:
 
 ```typescript
-const data = await deliveryClient.getDataList("YourProjection", authData);
+const dataList = await deliveryClient.getDataList("YourProjection", authData);
 ```
+
+The dataList response contains the following fields:
+
+-   `limit`: The pagination limit
+-   `page`: The pagination page
+-   `total`: The total amount of elements matching the given filter
+-   `data`: The selected data
 
 With pagination:
 
 ```typescript
 const limit = 50; // elements to query per page
 const page = 1; // number of the page you want to select, first page starts at: 1
-const data = await deliveryClient.getDataList("YourProjection", authData, limit, page);
+const dataList = await deliveryClient.getDataList("YourProjection", authData, limit, page);
 ```
 
 With filter:
 
 ```typescript
-const data = await deliveryClient.getDataList("YourProjection", authData, undefined, undefined, {
-    fields: {
-        fieldName: {
-            operation: "equals",
-            type: "Int",
-            value: 123,
+const dataList = await deliveryClient.getDataList(
+    "YourProjection",
+    authData,
+    undefined,
+    undefined,
+    {
+        fields: {
+            fieldName: {
+                operation: "equals",
+                type: "Int",
+                value: 123,
+            },
         },
-    },
-});
+    }
+);
 ```
 
 All `Filter`s are evaluated by:
@@ -247,12 +260,19 @@ With order:
 All order definitions are prioritized in the order that they are defined (the first definition is prioritized over the second).
 
 ```typescript
-const data = await client.getDataList("YourProjection", authData, undefined, undefined, undefined, [
-    {
-        field: "fieldName",
-        descending: true, // omit this value for asc order
-    },
-]);
+const dataList = await client.getDataList(
+    "YourProjection",
+    authData,
+    undefined,
+    undefined,
+    undefined,
+    [
+        {
+            field: "fieldName",
+            descending: true, // omit this value for asc order
+        },
+    ]
+);
 ```
 
 ### Gracefully close the clients

@@ -1,5 +1,9 @@
 # vNext
 
+# v0.11.0
+
+-   (feature) Add total amount to pagination data
+
 # v0.10.1
 
 -   (bug) Fix migration logic

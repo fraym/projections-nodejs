@@ -211,7 +211,7 @@ const data = await deliveryClient.getData(
 );
 ```
 
-### Get (paginated / filtered) data
+### Get (paginated / filtered / ordered) data
 
 The name of `YourProjection` has to equal your type name in your schema (also in casing).
 

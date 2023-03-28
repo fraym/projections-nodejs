@@ -1,5 +1,7 @@
 # vNext
 
+-   (bug) Fix `upsertData` type
+
 # v0.14.0
 
 -   (feature) Specify correlation and causation ids

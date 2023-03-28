@@ -29,7 +29,7 @@ export const upsertProjectionData = async <T extends {}>(
     projection: string,
     auth: AuthData,
     dataId: string,
-    payload: T,
+    payload: Record<string, any>,
     eventMetadata: EventMetadata,
     serviceClient: DeliveryServiceClient
 ): Promise<UpsertResponse<T>> => {

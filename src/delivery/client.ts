@@ -30,7 +30,7 @@ export interface DeliveryClient {
         projection: string,
         authData: AuthData,
         dataId: string,
-        payload: T,
+        payload: Record<string, any>,
         eventMetadata?: EventMetadata
     ) => Promise<UpsertResponse<T>>;
     deleteDataById: (
@@ -100,7 +100,7 @@ export const newDeliveryClient = async (config?: DeliveryClientConfig): Promise<
         projection: string,
         authData: AuthData,
         dataId: string,
-        payload: T,
+        payload: Record<string, any>,
         eventMetadata: EventMetadata = { causationId: "", correlationId: "" }
     ): Promise<UpsertResponse<T>> => {
         return upsertProjectionData<T>(

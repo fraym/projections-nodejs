@@ -443,7 +443,7 @@ const migrateSchemas = async (
         console.log(
             `Creating ${projectionsToCreate.length} projections: ${projectionsToCreate}...`
         );
-        await managementClient.upsert(createSchema);
+        await managementClient.upsert(replaceWithEnvData(createSchema));
         console.log(`Created ${projectionsToCreate.length} projections`);
     }
 
@@ -451,7 +451,7 @@ const migrateSchemas = async (
         console.log(
             `Updating ${projectionsToUpdate.length} projections: ${projectionsToUpdate}...`
         );
-        await managementClient.upsert(updateSchema);
+        await managementClient.upsert(replaceWithEnvData(updateSchema));
         console.log(`Updated ${projectionsToUpdate.length} projections`);
     }
 
@@ -462,6 +462,29 @@ const migrateSchemas = async (
         await managementClient.remove(projectionsToRemove);
         console.log(`Removed ${projectionsToRemove.length} projections`);
     }
+};
+
+const replaceWithEnvData = (str: string): string => {
+    const regex = /{{env\.([a-zA-Z_]+)}}/g;
+    const matches = str.match(regex);
+
+    const envData: Record<string, string> = {};
+
+    matches?.forEach(match => {
+        const variable = match.replace("{{env.", "").replace("}}", "");
+
+        if (!envData[variable]) {
+            envData[variable] = process.env[variable] ?? "";
+        }
+    });
+
+    let outputStr = str;
+
+    Object.keys(envData).forEach(key => {
+        outputStr = outputStr.replaceAll(`{{env.${key}}}`, envData[key]);
+    });
+
+    return outputStr;
 };
 
 const ensureValidName = (name: string): void | never => {

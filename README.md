@@ -44,6 +44,29 @@ PERMISSIONS_SCHEMA_GLOB=
 PROJECTIONS_NAMESPACE=
 ```
 
+## Env variable placeholders in migrations
+
+You can use placeholders that match environment variables in argument strings in your schema definitions:
+
+In the following example the `{{env.BACKEND_HOSTNAME}}` part will be replaced by the value of the `BACKEND_HOSTNAME` environment variable.
+Please add your used env variables to the `.env` file that is used to [configure the migration command](#config).
+
+```graphql
+type TestType {
+    value: String
+        @webhook(
+            url: "http://{{env.BACKEND_HOSTNAME}}/event-organizing/contingent/projections/frontend/contingent-management/webhook"
+            method: "GET"
+            header: [{ key: "Content-Type", value: "'application/json'" }]
+            body: [
+                { key: "metadata", value: "metadata" }
+                { key: "payload", value: "payload" }
+                { key: "projection", value: "projection" }
+            ]
+        )
+}
+```
+
 ## Usage
 
 ### Create the clients

@@ -1,5 +1,9 @@
 # vNext
 
+# v0.13.0
+
+-   (feature) Add env variable placeholders
+
 # v0.12.1
 
 -   (bug) Fix error handling in migrations

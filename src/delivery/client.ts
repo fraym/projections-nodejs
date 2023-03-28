@@ -8,6 +8,7 @@ import { Order } from "./order";
 import { AuthData } from "./auth";
 import { upsertProjectionData, UpsertResponse } from "./upsert";
 import { deleteProjectionData } from "./delete";
+import { EventMetadata } from "./eventMetadata";
 
 export interface DeliveryClient {
     getData: <T extends {}>(
@@ -29,13 +30,20 @@ export interface DeliveryClient {
         projection: string,
         authData: AuthData,
         dataId: string,
-        payload: T
+        payload: T,
+        eventMetadata?: EventMetadata
     ) => Promise<UpsertResponse<T>>;
-    deleteDataById: (projection: string, authData: AuthData, dataId: string) => Promise<number>;
+    deleteDataById: (
+        projection: string,
+        authData: AuthData,
+        dataId: string,
+        eventMetadata?: EventMetadata
+    ) => Promise<number>;
     deleteDataByFilter: (
         projection: string,
         authData: AuthData,
-        filter?: Filter
+        filter?: Filter,
+        eventMetadata?: EventMetadata
     ) => Promise<number>;
     close: () => Promise<void>;
 }
@@ -92,21 +100,31 @@ export const newDeliveryClient = async (config?: DeliveryClientConfig): Promise<
         projection: string,
         authData: AuthData,
         dataId: string,
-        payload: T
+        payload: T,
+        eventMetadata: EventMetadata = { causationId: "", correlationId: "" }
     ): Promise<UpsertResponse<T>> => {
-        return upsertProjectionData<T>(projection, authData, dataId, payload, serviceClient);
+        return upsertProjectionData<T>(
+            projection,
+            authData,
+            dataId,
+            payload,
+            eventMetadata,
+            serviceClient
+        );
     };
 
     const deleteDataById = async (
         projection: string,
         authData: AuthData,
-        dataId: string
+        dataId: string,
+        eventMetadata: EventMetadata = { causationId: "", correlationId: "" }
     ): Promise<number> => {
         return deleteProjectionData(
             projection,
             authData,
             dataId,
             { fields: {}, and: [], or: [] },
+            eventMetadata,
             serviceClient
         );
     };
@@ -114,9 +132,10 @@ export const newDeliveryClient = async (config?: DeliveryClientConfig): Promise<
     const deleteDataByFilter = async (
         projection: string,
         authData: AuthData,
-        filter: Filter = { fields: {}, and: [], or: [] }
+        filter: Filter = { fields: {}, and: [], or: [] },
+        eventMetadata: EventMetadata = { causationId: "", correlationId: "" }
     ): Promise<number> => {
-        return deleteProjectionData(projection, authData, "", filter, serviceClient);
+        return deleteProjectionData(projection, authData, "", filter, eventMetadata, serviceClient);
     };
 
     const close = async () => {

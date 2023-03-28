@@ -1,5 +1,6 @@
 import { DeliveryServiceClient } from "@fraym/projections-proto";
 import { AuthData, getProtobufAuthData } from "./auth";
+import { EventMetadata } from "./eventMetadata";
 
 export type UpsertResponse<T extends {}> = UpsertSuccessResponse<T> | UpsertValidationResponse;
 
@@ -29,6 +30,7 @@ export const upsertProjectionData = async <T extends {}>(
     auth: AuthData,
     dataId: string,
     payload: T,
+    eventMetadata: EventMetadata,
     serviceClient: DeliveryServiceClient
 ): Promise<UpsertResponse<T>> => {
     return new Promise<UpsertResponse<T>>((resolve, reject) => {
@@ -38,6 +40,7 @@ export const upsertProjectionData = async <T extends {}>(
                 auth: getProtobufAuthData(auth),
                 dataId,
                 payload,
+                eventMetadata,
             },
             (error, response) => {
                 if (error) {

@@ -1,5 +1,9 @@
 # vNext
 
+# v0.14.0
+
+-   (feature) Specify correlation and causation ids
+
 # v0.13.0
 
 -   (feature) Add env variable placeholders

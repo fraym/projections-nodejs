@@ -126,6 +126,17 @@ Fields:
 -   `scopes`: Slice of scopes to use for the action
 -   `data`: Data that is used in directives like `@filterFromJwtData`
 
+### Event Metadata
+
+You can specify the correlation and causation IDs for the upsert and delete functions. The `eventMetadata` parameter is optional for all these functions and has the following structure:
+
+```typescript
+const eventMetadata = {
+    correlationId: "some-correlation-id",
+    causationId: "some-causation-id",
+};
+```
+
 ### Upsert data in projection
 
 In general you upsert data by publishing events on the event stream.
@@ -138,7 +149,8 @@ const response = await client.upsertData<{ fieldName: string }>(
     "dataId",
     {
         fieldName: "value",
-    }
+    },
+    eventMetadata
 );
 ```
 
@@ -161,13 +173,13 @@ There are cases where you want to improve performance and get detailed validatio
 Delete by Id:
 
 ```go
-const numberOfDeletedEntries = await client.deleteDataById("ProjectionName", authData, "dataId")
+const numberOfDeletedEntries = await client.deleteDataById("ProjectionName", authData, "dataId", eventMetadata)
 ```
 
 Delete by filter:
 
 ```go
-const numberOfDeletedEntries = client.deleteDataByFilter("ProjectionName", authData, filter)
+const numberOfDeletedEntries = client.deleteDataByFilter("ProjectionName", authData, filter, eventMetadata)
 ```
 
 ### Get a single projection element

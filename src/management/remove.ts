@@ -4,7 +4,7 @@ export const removeProjections = async (
     projectionNames: string[],
     config: ManagementClientConfig
 ): Promise<void> => {
-    await fetch(`${config.serverAddress}/management/projections`, {
+    const response = await fetch(`${config.serverAddress}/management/projections`, {
         method: "DELETE",
         headers: {
             Authorization: `Bearer ${config.apiToken}`,
@@ -14,4 +14,8 @@ export const removeProjections = async (
             projectionNames,
         }),
     });
+
+    if (!response.ok) {
+        throw new Error(await response.text());
+    }
 };

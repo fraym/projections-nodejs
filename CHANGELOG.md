@@ -1,5 +1,9 @@
 # vNext
 
+# v0.12.1
+
+-   (bug) Fix error handling in migrations
+
 # v0.12.0
 
 -   (bc) Use http migration api

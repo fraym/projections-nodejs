@@ -29,7 +29,7 @@ const run = async () => {
         .config({
             schemaGlob: "./src/**/*.graphql",
             permissionsSchemaGlob: "",
-            serverAddress: "127.0.0.1:9000",
+            serverAddress: "http://127.0.0.1",
             apiToken: "",
             namespace: "",
         })

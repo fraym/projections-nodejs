@@ -1,6 +1,9 @@
 # vNext
 
+# v0.14.1
+
 -   (bug) Fix `upsertData` type
+-   (bug) Return id when upserting data
 
 # v0.14.0
 

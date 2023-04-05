@@ -6,6 +6,7 @@ export type UpsertResponse<T extends {}> = UpsertSuccessResponse<T> | UpsertVali
 
 export interface UpsertSuccessResponse<T extends {}> {
     data: T;
+    id: string;
 }
 
 export interface UpsertValidationResponse {
@@ -64,6 +65,7 @@ export const upsertProjectionData = async <T extends {}>(
 
                 resolve({
                     data,
+                    id: response.id,
                 });
             }
         );

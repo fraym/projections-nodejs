@@ -27,10 +27,10 @@
         "projections": "dist/cmd/projections.js"
     },
     "dependencies": {
-        "@fraym/projections-proto": "^1.0.0-alpha.16",
+        "@fraym/projections-proto": "^1.0.0-alpha.17",
         "@graphql-tools/graphql-file-loader": "^7.5.16",
         "@graphql-tools/load": "^7.8.13",
-        "@grpc/grpc-js": "^1.8.12",
+        "@grpc/grpc-js": "^1.8.13",
         "dotenv": "^16.0.3",
         "graphql": "^16.6.0",
         "yargs": "^17.7.1"
@@ -38,9 +38,9 @@
     "devDependencies": {
         "@becklyn/prettier": "^1.0.2",
         "@types/uuid": "^9.0.1",
-        "@types/yargs": "^17.0.22",
-        "prettier": "^2.8.4",
-        "typescript": "^5.0.2",
+        "@types/yargs": "^17.0.24",
+        "prettier": "^2.8.7",
+        "typescript": "^5.0.3",
         "uuid": "^9.0.0"
     },
     "prettier": "@becklyn/prettier"

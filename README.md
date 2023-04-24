@@ -85,7 +85,7 @@ const managementClient = await newManagementClient();
 
 ### Create one or multipe projections
 
-Projectionw are defined by schemas. A schema can contain more than one projection definition. See [SCHEMA.md](https://github.com/fraym/projections/blob/develop/SCHEMA.md) for a reference.
+Projectionw are defined by schemas. A schema can contain more than one projection definition. See [SCHEMA.md](SCHEMA.md) for a reference.
 
 ```typescript
 await managementClient.create("your schema here");
@@ -93,7 +93,7 @@ await managementClient.create("your schema here");
 
 ### Update one or multipe projections
 
-Projectionw are defined by schemas. A schema can contain more than one projection definition. See [SCHEMA.md](https://github.com/fraym/projections/blob/develop/SCHEMA.md) for a reference.
+Projectionw are defined by schemas. A schema can contain more than one projection definition. See [SCHEMA.md](SCHEMA.md) for a reference.
 
 ```typescript
 await managementClient.update("your schema here");

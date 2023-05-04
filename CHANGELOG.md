@@ -1,5 +1,10 @@
 # vNext
 
+# v0.14.2
+
+-   (bug) Fix upsert logic
+-   (improvement) Improve docs: add @unique documentation
+
 # v0.14.1
 
 -   (bug) Fix `upsertData` type

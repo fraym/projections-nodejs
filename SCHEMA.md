@@ -16,16 +16,16 @@ type User {
 
 Supported Types:
 
-- String
-- ID
-- Boolean
-- Int
-- Float
-- DateTime (unix timestamp, milliseconds)
-- Arrays
-- Objects / references to other projections
-- Enums
-- All types listed above in their required form
+-   String
+-   ID
+-   Boolean
+-   Int
+-   Float
+-   DateTime (unix timestamp, milliseconds)
+-   Arrays
+-   Objects / references to other projections
+-   Enums
+-   All types listed above in their required form
 
 ### EventEnvelope
 
@@ -37,8 +37,8 @@ You can define Enums and use them in your schema:
 
 ```graphql
 enum YourEnum {
-  YOUR_VALUE
-  OTHER_VALUE
+    YOUR_VALUE
+    OTHER_VALUE
 }
 ```
 
@@ -49,12 +49,12 @@ You can also define a nested type:
 
 ```graphql
 type User {
-  friends: [User!]! # This is an array references to other users
-  nested: Profile! # This is a nested object field this field does not reference to an other projection, it directly contains the nested data
+    friends: [User!]! # This is an array references to other users
+    nested: Profile! # This is a nested object field this field does not reference to an other projection, it directly contains the nested data
 }
 
 type Profile {
-  email: String
+    email: String
 }
 ```
 
@@ -148,16 +148,16 @@ The entire projection data will be replaced by the resulting json of the called 
 
 ```graphql
 type User
-  @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] })
-  @webhook(
-    url: "https://example.com/:path"
-    method: "GET"
-    condition: "payload.name == ''"
-    topics: ["users"]
-    events: ["createUser"]
-    path: [{ key: "path", value: "payload.name" }]
-  ) {
-  field: String!
+    @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] })
+    @webhook(
+        url: "https://example.com/:path"
+        method: "GET"
+        condition: "payload.name == ''"
+        topics: ["users"]
+        events: ["createUser"]
+        path: [{ key: "path", value: "payload.name" }]
+    ) {
+    field: String!
 }
 ```
 
@@ -176,6 +176,19 @@ In case of the `body` argument all `key` and `value` pairs will be combined to a
 
 The result from the webhook must contain a json structure. The directive will take the `value` field from it and write the value of it into the projection.
 
+## Unique constraints
+
+You can mark field compounds as unique by using the `@unique` directive at type level:
+
+```graphql
+type User
+    @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] })
+    @unique(fields: ["field", "field2"]) {
+    field: String!
+    field2: String!
+}
+```
+
 ## Field directives
 
 In general fields will be filled by the event payload field that matches the field name.
@@ -186,21 +199,17 @@ Event payload:
 
 ```json
 {
-  "id": "some-id",
-  "firstName": "John",
-  "lastName": "Doe"
+    "id": "some-id",
+    "firstName": "John",
+    "lastName": "Doe"
 }
 ```
 
 Projection schema:
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  lastName: String
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    lastName: String
 }
 ```
 
@@ -208,7 +217,7 @@ When the event containing the example payload is thrown, the `User` prrojection 
 
 ```json
 {
-  "lastName": "Doe"
+    "lastName": "Doe"
 }
 ```
 
@@ -221,12 +230,8 @@ You can add special annotations to fields to add custom logic:
 Use the `@identifier` directive on a field to add the projection entry id to that field.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: ID! @identifier
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: ID! @identifier
 }
 ```
 
@@ -235,12 +240,8 @@ type User
 Use the `@changedAt` directive on a field to add the time on which the projection entry was last changed to that field.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String! @changedAt
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @changedAt
 }
 ```
 
@@ -249,12 +250,8 @@ type User
 Use the `@changedAt` directive on a field to add the time on which the projection entry was created to that field.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String! @createdAt
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @createdAt
 }
 ```
 
@@ -263,24 +260,16 @@ type User
 Use the `@uuidv4` directive on a field to mark it as having to contain a valid UUIDv4.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: ID! @uuidv4
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: ID! @uuidv4
 }
 ```
 
 In addition to that the `generate` argument can be used to automaticly generate a valid UUIDv4, if the projection entry is empty on that field.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: ID! @uuidv4(generate: true)
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: ID! @uuidv4(generate: true)
 }
 ```
 
@@ -289,12 +278,8 @@ type User
 Use the `@validate` directive on a field to add validation against a rule tag from the [go-playground/validator](https://github.com/go-playground/validator#baked-in-validations) package.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String! @validate(tags: ["email"])
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @validate(tags: ["email"])
 }
 ```
 
@@ -305,12 +290,8 @@ Use the `@default` directive on a field to define its default value if the proje
 The type can be either a non-null type or a nullable type. On a non-null type the respective zero type is replaced by the default value, whilst on the nullable type the null value is replaced by the default.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String! @default(value: "John Appleseed")
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @default(value: "John Appleseed")
 }
 ```
 
@@ -319,12 +300,8 @@ type User
 Use the `@index` directive on a field to enable filtering on it in all list queries and graphql subscriptions.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String! @index
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @index
 }
 ```
 
@@ -335,12 +312,8 @@ The value that is used for the filter will be extracted from the jwt claims data
 Note: If the filter value from the jwt contains array data, the filter will check if that field matchesthe first element of that array. If the value from the jwt is null or empty no filter will be applied.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String! @filterFromJwtData(key: "yourJwtDataKey")
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @filterFromJwtData(key: "yourJwtDataKey")
 }
 ```
 
@@ -349,12 +322,18 @@ type User
 Use the `@permission` directive on a field to apply permissions to it. Only users having that required permissions as a scope in their token will see that field.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String! @permission(read: [PERMISSION_KEY])
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @permission(read: [PERMISSION_KEY])
+}
+```
+
+### Mark single fields as unique
+
+Use the `@unique` directive on a field to mark it as unique.
+
+```graphql
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @unique
 }
 ```
 
@@ -367,61 +346,48 @@ Because of the rather complex nature that are projections rules, one has access 
 
 the from directive has access to the following variables:
 
-- `metatata`: Event metadata. Possible fields:
-  - `metadata.id`: The id of the event (string)
-  - `metadata.tenantId`: The tenant id of the event (string)
-  - `metadata.stream`: The stream name of the event (string)
-  - `metadata.type`: The type name of the event (string)
-  - `metadata.correlationId`: The tenant correlation id of the event (string)
-  - `metadata.causationId`: The causation id of the event (string)
-  - `metadata.reason`: The reason string of the event (string)
-  - `metadata.topic`: The topic of the event (string)
-  - `metadata.raisedAt`: The time when this event was raised, represented as unix timestamp (milliseconds) (int64)
-- `payload`
-  - all fields that the event payload contains
-  - if your payload field is an object (not a reference to an other projection), you can access all object fields, too: `payload.user.name` would access the name field of the user object in the user field of the event payload
-- `projection`
-  - all fields that the event projection contains
-  - the `projection` variable contains the state of the projection before the event is applied to the projection and will therefore be empty for the first event that generates a new projection data entry
-  - if your projection field is an object (not a reference to an other projection), you can access all object fields, too: `payload.user.name` would access the name field of the user object in the user field of the projection
+-   `metatata`: Event metadata. Possible fields:
+    -   `metadata.id`: The id of the event (string)
+    -   `metadata.tenantId`: The tenant id of the event (string)
+    -   `metadata.stream`: The stream name of the event (string)
+    -   `metadata.type`: The type name of the event (string)
+    -   `metadata.correlationId`: The tenant correlation id of the event (string)
+    -   `metadata.causationId`: The causation id of the event (string)
+    -   `metadata.reason`: The reason string of the event (string)
+    -   `metadata.topic`: The topic of the event (string)
+    -   `metadata.raisedAt`: The time when this event was raised, represented as unix timestamp (milliseconds) (int64)
+-   `payload`
+    -   all fields that the event payload contains
+    -   if your payload field is an object (not a reference to an other projection), you can access all object fields, too: `payload.user.name` would access the name field of the user object in the user field of the event payload
+-   `projection`
+    -   all fields that the event projection contains
+    -   the `projection` variable contains the state of the projection before the event is applied to the projection and will therefore be empty for the first event that generates a new projection data entry
+    -   if your projection field is an object (not a reference to an other projection), you can access all object fields, too: `payload.user.name` would access the name field of the user object in the user field of the projection
 
 #### Additional functions
 
 In additon to the functions build into [expr](https://github.com/antonmedv/expr/blob/master/docs/Language-Definition.md) projections provides the following functions:
 
-- `append(array, value)`: appends the `value` to the `array`
-- `intSum(arrayOfInts)`: calculates the sum of all elements in the `arrayOfInts` (requires actual `int` values in the array, maybe make use of `map(arrayOfNumbers, {int(#)})`to convert all values to integers)
+-   `append(array, value)`: appends the `value` to the `array`
+-   `intSum(arrayOfInts)`: calculates the sum of all elements in the `arrayOfInts` (requires actual `int` values in the array, maybe make use of `map(arrayOfNumbers, {int(#)})`to convert all values to integers)
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String! @from(value: "payload.id")
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @from(value: "payload.id")
 }
 ```
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String!
-    @from(value: "payload.id", condition: "metadata.stream == 'users'")
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @from(value: "payload.id", condition: "metadata.stream == 'users'")
 }
 ```
 
 In addition to that the behviour can only be triggered on a specified set of events using the `events` agrument.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String! @from(events: ["UserCreated"], value: "payload.id")
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String! @from(events: ["UserCreated"], value: "payload.id")
 }
 ```
 
@@ -432,23 +398,16 @@ You can access already projected data by `projection.YOUR_FIELD_NAME`. If the pr
 You can get data from an API into a field by using the `@webhook` directive.
 
 ```graphql
-type User
-  @upsertOn(
-    on: { eventTypes: ["createUser"] }
-    identifyBy: { payload: ["id"] }
-  ) {
-  field: String!
-    @webhook(
-      url: "https://example.com/:path"
-      method: "GET"
-      condition: "payload.name == ''"
-      path: [
-        {
-          key: "path"
-          value: { value: "payload.name", condition: "payload.name == ''" }
-        }
-      ]
-    )
+type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {
+    field: String!
+        @webhook(
+            url: "https://example.com/:path"
+            method: "GET"
+            condition: "payload.name == ''"
+            path: [
+                { key: "path", value: { value: "payload.name", condition: "payload.name == ''" } }
+            ]
+        )
 }
 ```
 

@@ -34,13 +34,19 @@ export const upsertProjectionData = async <T extends {}>(
     eventMetadata: EventMetadata,
     serviceClient: DeliveryServiceClient
 ): Promise<UpsertResponse<T>> => {
+    const usedPayload: Record<string, string> = {};
+
+    for (const key in payload) {
+        usedPayload[key] = JSON.stringify(payload[key]);
+    }
+
     return new Promise<UpsertResponse<T>>((resolve, reject) => {
         serviceClient.upsertData(
             {
                 projection,
                 auth: getProtobufAuthData(auth),
                 dataId,
-                payload,
+                payload: usedPayload,
                 eventMetadata,
             },
             (error, response) => {

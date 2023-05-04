@@ -22,6 +22,7 @@ directive @removeOn(on: EventSelector!, identifyBy: IdentifyByOptions!) repeatab
 directive @expires(condition: String!) on OBJECT
 directive @global on OBJECT
 directive @permission(read: [Permission!]) on OBJECT | FIELD_DEFINITION
+directive @unique(fields: [String!]) on OBJECT | FIELD_DEFINITION
 directive @webhook(
     url: String!
     method: String!

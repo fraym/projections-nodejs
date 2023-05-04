@@ -183,7 +183,7 @@ You can mark field compounds as unique by using the `@unique` directive at type 
 ```graphql
 type User
     @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] })
-    @unique(fields: ["field", "field2"]) {
+    @unique(fields: ["field", "field2"], name: "field and field2 unique") {
     field: String!
     field2: String!
 }

@@ -60,7 +60,7 @@ type Profile {
 
 ## Type directives
 
-All allowed options of all available directives are explained by the [schema definition](https://github.com/fraym/projections-nodejs/blob/main/default.graphql).
+All allowed options of all available directives are explained by the [schema definition](https://github.com/fraym/projections-nodejs/blob/main/base.graphql).
 
 ### Create or update projection data
 

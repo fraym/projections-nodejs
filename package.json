@@ -1,6 +1,6 @@
 {
     "name": "@fraym/projections",
-    "version": "0.14.2",
+    "version": "0.15.0",
     "license": "MIT",
     "homepage": "https://github.com/fraym/projections-nodejs",
     "repository": {
@@ -12,20 +12,16 @@
         "test": "echo \"Error: no test specified\" && exit 0",
         "format": "prettier --write \"**/*.{ts,tsx,json}\"",
         "lint": "prettier --check \"**/*.{ts,tsx,json}\"",
-        "build": "npm run clean && tsc && chmod +x dist/cmd/projections.js",
+        "build": "npm run clean && tsc",
         "clean": "rm -rf dist",
         "prepublishOnly": "npm test && npm run lint && npm run build",
-        "preversion": "npm run lint",
-        "cmd": "dist/cmd/projections.js"
+        "preversion": "npm run lint"
     },
     "files": [
         "dist/**/*"
     ],
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
-    "bin": {
-        "projections": "dist/cmd/projections.js"
-    },
     "dependencies": {
         "@fraym/projections-proto": "^1.0.0-alpha.17",
         "@graphql-tools/graphql-file-loader": "^7.5.16",

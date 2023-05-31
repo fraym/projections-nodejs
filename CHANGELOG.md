@@ -1,5 +1,10 @@
 # vNext
 
+# v0.15.0
+
+-   (bc) Remove management api
+-   (bc) Remove migration command
+
 # v0.14.2
 
 -   (bug) Fix upsert logic

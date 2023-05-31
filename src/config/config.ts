@@ -9,13 +9,6 @@ export interface DeliveryClientConfig {
     keepaliveTimeout?: number;
 }
 
-export interface ManagementClientConfig {
-    // serverAddress: address of the projection service
-    serverAddress: string;
-    // apiToken: auth token for the api
-    apiToken: string;
-}
-
 export const getEnvDeliveryConfig = (): DeliveryClientConfig => {
     config();
 
@@ -41,15 +34,6 @@ export const getEnvDeliveryConfig = (): DeliveryClientConfig => {
     };
 };
 
-export const getEnvManagementConfig = (): ManagementClientConfig => {
-    config();
-
-    return {
-        serverAddress: process.env.PROJECTIONS_MANAGEMENT_SERVER_ADDRESS ?? "",
-        apiToken: process.env.PROJECTIONS_MANAGEMENT_API_TOKEN ?? "",
-    };
-};
-
 export const useDeliveryConfigDefaults = (
     config?: DeliveryClientConfig
 ): Required<DeliveryClientConfig> => {
@@ -61,18 +45,5 @@ export const useDeliveryConfigDefaults = (
         serverAddress: config.serverAddress,
         keepaliveTimeout: config.keepaliveTimeout ?? 3 * 1000,
         keepaliveInterval: config.keepaliveInterval ?? 40 * 1000,
-    };
-};
-
-export const useManagementConfigDefaults = (
-    config?: ManagementClientConfig
-): Required<ManagementClientConfig> => {
-    if (!config) {
-        config = getEnvManagementConfig();
-    }
-
-    return {
-        serverAddress: config.serverAddress,
-        apiToken: config.apiToken,
     };
 };

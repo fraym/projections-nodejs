@@ -23,20 +23,20 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "dependencies": {
-        "@fraym/projections-proto": "^1.0.0-alpha.17",
-        "@graphql-tools/graphql-file-loader": "^7.5.16",
-        "@graphql-tools/load": "^7.8.13",
-        "@grpc/grpc-js": "^1.8.13",
-        "dotenv": "^16.0.3",
-        "graphql": "^16.6.0",
-        "yargs": "^17.7.1"
+        "@fraym/projections-proto": "^1.0.0",
+        "@graphql-tools/graphql-file-loader": "^7.5.17",
+        "@graphql-tools/load": "^7.8.14",
+        "@grpc/grpc-js": "^1.8.18",
+        "dotenv": "^16.3.1",
+        "graphql": "^16.7.1",
+        "yargs": "^17.7.2"
     },
     "devDependencies": {
         "@becklyn/prettier": "^1.0.2",
-        "@types/uuid": "^9.0.1",
+        "@types/uuid": "^9.0.2",
         "@types/yargs": "^17.0.24",
-        "prettier": "^2.8.7",
-        "typescript": "^5.0.3",
+        "prettier": "^2.8.8",
+        "typescript": "^5.1.6",
         "uuid": "^9.0.0"
     },
     "prettier": "@becklyn/prettier"

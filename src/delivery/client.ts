@@ -9,6 +9,7 @@ import { AuthData } from "./auth";
 import { upsertProjectionData, UpsertResponse } from "./upsert";
 import { deleteProjectionData } from "./delete";
 import { EventMetadata } from "./eventMetadata";
+import { Wait } from "./wait";
 
 export interface DeliveryClient {
     getData: <T extends {}>(
@@ -16,7 +17,8 @@ export interface DeliveryClient {
         authData: AuthData,
         id: string,
         filter?: Filter,
-        returnEmptyDataIfNotFound?: boolean
+        returnEmptyDataIfNotFound?: boolean,
+        wait?: Wait
     ) => Promise<T | null>;
     getDataList: <T extends {}>(
         projection: string,
@@ -65,7 +67,8 @@ export const newDeliveryClient = async (config?: DeliveryClientConfig): Promise<
         auth: AuthData,
         id: string,
         filter: Filter = { fields: {}, and: [], or: [] },
-        returnEmptyDataIfNotFound: boolean = false
+        returnEmptyDataIfNotFound: boolean = false,
+        wait?: Wait
     ): Promise<T | null> => {
         return await getProjectionData<T>(
             projection,
@@ -73,7 +76,8 @@ export const newDeliveryClient = async (config?: DeliveryClientConfig): Promise<
             id,
             filter,
             returnEmptyDataIfNotFound,
-            serviceClient
+            serviceClient,
+            wait
         );
     };
 

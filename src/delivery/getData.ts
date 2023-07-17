@@ -1,6 +1,7 @@
 import { DeliveryServiceClient } from "@fraym/projections-proto";
 import { AuthData, getProtobufAuthData } from "./auth";
 import { Filter, getProtobufDataFilter } from "./filter";
+import { Wait, getProtobufDataWait } from "./wait";
 
 export const getProjectionData = async <T extends {}>(
     projection: string,
@@ -8,7 +9,8 @@ export const getProjectionData = async <T extends {}>(
     dataId: string,
     filter: Filter,
     returnEmptyDataIfNotFound: boolean,
-    serviceClient: DeliveryServiceClient
+    serviceClient: DeliveryServiceClient,
+    wait?: Wait
 ): Promise<T | null> => {
     return new Promise<T | null>((resolve, reject) => {
         serviceClient.getData(
@@ -18,6 +20,7 @@ export const getProjectionData = async <T extends {}>(
                 dataId,
                 filter: getProtobufDataFilter(filter),
                 returnEmptyDataIfNotFound,
+                wait: getProtobufDataWait(wait),
             },
             (error, response) => {
                 if (error) {

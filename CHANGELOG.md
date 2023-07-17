@@ -1,5 +1,9 @@
 # vNext
 
+# v0.16.0
+
+-   (feature) Add wait condition to `getData` of delivery client
+
 # v0.15.0
 
 -   (bc) Remove management api

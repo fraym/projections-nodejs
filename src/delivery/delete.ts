@@ -1,4 +1,4 @@
-import { DeliveryServiceClient } from "@fraym/projections-proto";
+import { ServiceClient } from "@fraym/proto/freym/projections/delivery";
 
 import { AuthData, getProtobufAuthData } from "./auth";
 import { EventMetadata } from "./eventMetadata";
@@ -10,7 +10,7 @@ export const deleteProjectionData = async (
     dataId: string,
     filter: Filter,
     eventMetadata: EventMetadata,
-    serviceClient: DeliveryServiceClient
+    serviceClient: ServiceClient
 ): Promise<number> => {
     return new Promise<number>((resolve, reject) => {
         serviceClient.deleteData(

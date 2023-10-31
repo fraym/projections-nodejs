@@ -1,4 +1,4 @@
-import { DataOrder } from "@fraym/projections-proto";
+import { DataOrder } from "@fraym/proto/freym/projections/delivery";
 
 export interface Order {
     field: string;

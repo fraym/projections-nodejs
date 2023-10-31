@@ -1,4 +1,4 @@
-import { DataWait } from "@fraym/projections-proto";
+import { DataWait } from "@fraym/proto/freym/projections/delivery";
 import { Filter, getProtobufDataFilter } from "./filter";
 
 export interface Wait {

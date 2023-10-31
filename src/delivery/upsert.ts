@@ -1,4 +1,4 @@
-import { DeliveryServiceClient } from "@fraym/projections-proto";
+import { ServiceClient } from "@fraym/proto/freym/projections/delivery";
 import { AuthData, getProtobufAuthData } from "./auth";
 import { EventMetadata } from "./eventMetadata";
 
@@ -32,7 +32,7 @@ export const upsertProjectionData = async <T extends {}>(
     dataId: string,
     payload: Record<string, any>,
     eventMetadata: EventMetadata,
-    serviceClient: DeliveryServiceClient
+    serviceClient: ServiceClient
 ): Promise<UpsertResponse<T>> => {
     const usedPayload: Record<string, string> = {};
 

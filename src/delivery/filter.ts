@@ -1,4 +1,4 @@
-import { DataFilter } from "@fraym/projections-proto";
+import { DataFilter } from "@fraym/proto/freym/projections/delivery";
 
 export interface Filter {
     fields: Record<string, FieldFilter>;

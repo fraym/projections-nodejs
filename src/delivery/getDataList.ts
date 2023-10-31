@@ -1,4 +1,4 @@
-import { DeliveryServiceClient } from "@fraym/projections-proto";
+import { ServiceClient } from "@fraym/proto/freym/projections/delivery";
 import { AuthData, getProtobufAuthData } from "./auth";
 import { Filter, getProtobufDataFilter } from "./filter";
 import { getProtobufDataOrder, Order } from "./order";
@@ -17,7 +17,7 @@ export const getProjectionDataList = async <T extends {}>(
     page: number,
     filter: Filter,
     order: Order[],
-    serviceClient: DeliveryServiceClient
+    serviceClient: ServiceClient
 ): Promise<GetProjectionDataList<T> | null> => {
     return new Promise<GetProjectionDataList<T> | null>((resolve, reject) => {
         serviceClient.getDataList(

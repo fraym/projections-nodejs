@@ -1,4 +1,4 @@
-import { AuthData as PbAuthData } from "@fraym/projections-proto";
+import { AuthData as PbAuthData } from "@fraym/proto/freym/projections/delivery";
 
 export interface AuthData {
     tenantId: string;

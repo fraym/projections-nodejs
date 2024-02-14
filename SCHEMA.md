@@ -247,7 +247,7 @@ type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: [
 
 ### Add a field that contains the creation time
 
-Use the `@changedAt` directive on a field to add the time on which the projection entry was created to that field.
+Use the `@createdAt` directive on a field to add the time on which the projection entry was created to that field.
 
 ```graphql
 type User @upsertOn(on: { eventTypes: ["createUser"] }, identifyBy: { payload: ["id"] }) {

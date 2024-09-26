@@ -1,5 +1,10 @@
 # vNext
 
+# v0.18.0
+
+-   (feature) Add view api
+-   (internal) Update dependencies
+
 # v0.17.0
 
 -   (bc) Use new protobuf lib

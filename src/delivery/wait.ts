@@ -13,6 +13,6 @@ export const getProtobufDataWait = (wait?: Wait): DataWait | undefined => {
 
     return {
         conditionFilter: getProtobufDataFilter(wait.conditionFilter),
-        timeout: wait.timeout ?? 0,
+        timeout: (wait.timeout ?? 0).toString(),
     };
 };

@@ -27,7 +27,7 @@ export const deleteProjectionData = async (
                     return;
                 }
 
-                resolve(response.numberOfDeletedEntries);
+                resolve(parseInt(response.numberOfDeletedEntries, 10));
             }
         );
     });

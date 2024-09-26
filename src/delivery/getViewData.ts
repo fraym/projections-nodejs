@@ -1,26 +1,19 @@
 import { ServiceClient } from "@fraym/proto/freym/projections/delivery";
 import { AuthData, getProtobufAuthData } from "./auth";
 import { Filter, getProtobufDataFilter } from "./filter";
-import { Wait, getProtobufDataWait } from "./wait";
 
-export const getProjectionData = async <T extends {}>(
-    projection: string,
+export const getViewData = async <T extends {}>(
+    view: string,
     auth: AuthData,
-    dataId: string,
     filter: Filter,
-    returnEmptyDataIfNotFound: boolean,
-    serviceClient: ServiceClient,
-    wait?: Wait
+    serviceClient: ServiceClient
 ): Promise<T | null> => {
     return new Promise<T | null>((resolve, reject) => {
-        serviceClient.getData(
+        serviceClient.getViewData(
             {
-                projection,
+                view,
                 auth: getProtobufAuthData(auth),
-                dataId,
                 filter: getProtobufDataFilter(filter),
-                returnEmptyDataIfNotFound,
-                wait: getProtobufDataWait(wait),
                 useStrongConsistency: false,
             },
             (error, response) => {

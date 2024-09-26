@@ -3,26 +3,26 @@ import { AuthData, getProtobufAuthData } from "./auth";
 import { Filter, getProtobufDataFilter } from "./filter";
 import { getProtobufDataOrder, Order } from "./order";
 
-export interface GetProjectionDataList<T extends {}> {
+export interface GetViewDataList<T extends {}> {
     limit: number;
     page: number;
     total: number;
     data: T[];
 }
 
-export const getProjectionDataList = async <T extends {}>(
-    projection: string,
+export const getViewDataList = async <T extends {}>(
+    view: string,
     auth: AuthData,
     limit: number,
     page: number,
     filter: Filter,
     order: Order[],
     serviceClient: ServiceClient
-): Promise<GetProjectionDataList<T> | null> => {
-    return new Promise<GetProjectionDataList<T> | null>((resolve, reject) => {
-        serviceClient.getDataList(
+): Promise<GetViewDataList<T> | null> => {
+    return new Promise<GetViewDataList<T> | null>((resolve, reject) => {
+        serviceClient.getViewDataList(
             {
-                projection,
+                view,
                 auth: getProtobufAuthData(auth),
                 limit: limit.toString(),
                 page: page.toString(),

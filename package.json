@@ -26,20 +26,20 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "dependencies": {
-        "@fraym/proto": "^0.3.0",
+        "@fraym/proto": "^0.25.0",
         "@graphql-tools/graphql-file-loader": "^7.5.17",
         "@graphql-tools/load": "^7.8.14",
-        "@grpc/grpc-js": "^1.9.7",
-        "dotenv": "^16.3.1",
-        "graphql": "^16.8.1",
+        "@grpc/grpc-js": "^1.11.3",
+        "dotenv": "^16.4.5",
+        "graphql": "^16.9.0",
         "yargs": "^17.7.2"
     },
     "devDependencies": {
         "@becklyn/prettier": "^1.0.2",
-        "@types/uuid": "^9.0.6",
-        "@types/yargs": "^17.0.29",
+        "@types/uuid": "^9.0.8",
+        "@types/yargs": "^17.0.33",
         "prettier": "^2.8.8",
-        "typescript": "^5.2.2",
+        "typescript": "^5.6.2",
         "uuid": "^9.0.1"
     },
     "prettier": "@becklyn/prettier"
